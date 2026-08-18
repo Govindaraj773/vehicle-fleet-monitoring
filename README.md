@@ -16,6 +16,7 @@ A backend-focused vehicle fleet monitoring system built using Node.js, Express.j
 ## Current Features
 
 ### Authentication
+
 - User registration
 - User login
 - Password hashing with bcrypt
@@ -23,6 +24,7 @@ A backend-focused vehicle fleet monitoring system built using Node.js, Express.j
 - Protected routes
 
 ### Vehicle Management
+
 - Create vehicle
 - Get all vehicles
 - Get vehicle by ID
@@ -40,3 +42,4 @@ backend/
 ├── .env.example
 ├── package.json
 └── server.js
+```
