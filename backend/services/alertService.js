@@ -13,7 +13,7 @@ const checkOverspeed = async (vehicle_id, speed) => {
          LIMIT 1`,
         [vehicle_id],
       );
-      console.log("Existing alert:", existingAlert.rows);
+      //   console.log("Existing alert:", existingAlert.rows);
 
       //2.if alert aleready exist
       if (existingAlert.rows.length > 0) {
@@ -50,4 +50,66 @@ const checkOverspeed = async (vehicle_id, speed) => {
   }
 };
 
-module.exports = { checkOverspeed };
+// const checkLowFuel = async (vehicle_id, fuel_level) => {
+//   try {
+//     if (fuel_level < 10) {
+//       const result = await pool.query(
+//         `INSERT INTO alerts(
+//             vehicle_id,
+//             alert_type,
+//             message,
+//             sovernity,
+//             is_resolved
+//             VALUES(1$,2$,3$,4$,5$)
+//             RETURNING *`,
+//         [vehicle_id, "low fuel", "Low fuel alert", "High", false],
+//       );
+//       return result.rows[0];
+//     }
+//     return null;
+//   } catch (error) {
+//     console.log("Low fuel alert", error);
+//     throw error;
+//   }
+// };
+
+const checkLowFuel = async (vehicle_id, fuel_level) => {
+  try {
+    if (fuel_level < 10) {
+      const existingAlert = await pool.query(
+        `SELECT *
+   FROM alerts
+   WHERE vehicle_id = $1
+   AND alert_type = 'low_fuel'
+   AND is_resolved = false
+   LIMIT 1`,
+        [vehicle_id],
+      );
+
+      if (existingAlert.rows.length > 0) {
+        return existingAlert.rows[0];
+      }
+      const result = await pool.query(
+        `INSERT INTO alerts (
+          vehicle_id,
+          alert_type,
+          message,
+          severity,
+          is_resolved
+        )
+        VALUES ($1, $2, $3, $4, $5)
+        RETURNING *`,
+        [vehicle_id, "low_fuel", "Vehicle fuel level is low", "high", false],
+      );
+
+      return result.rows[0];
+    }
+
+    return null;
+  } catch (error) {
+    console.log("Low fuel alert error:", error);
+    throw error;
+  }
+};
+
+module.exports = { checkOverspeed, checkLowFuel };

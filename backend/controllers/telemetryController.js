@@ -1,4 +1,4 @@
-const { checkOverspeed } = require("../services/alertService");
+const { checkOverspeed, checkLowFuel } = require("../services/alertService");
 const pool = require("../config/db");
 
 const createTelemetry = async (req, res) => {
@@ -51,11 +51,13 @@ const createTelemetry = async (req, res) => {
 
     // check overspeed alert
     const alert = await checkOverspeed(vehicle_id, speed);
+    const lowFuelAlert = await checkLowFuel(vehicle_id, fuel_level);
 
     res.status(201).json({
       message: "Telemetry data created successfully",
       telemetry: result.rows[0],
       alert: alert,
+      lowFuelAlert: lowFuelAlert,
     });
   } catch (error) {
     console.log(error);
