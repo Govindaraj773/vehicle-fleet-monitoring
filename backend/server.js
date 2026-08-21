@@ -6,7 +6,7 @@ const authRoutes = require("./routes/authRoutes");
 const vehicleRoutes = require("./routes/vehicleRoutes");
 const driverRoutes = require("./routes/driverRoutes");
 const telemetryRoutes = require("./routes/telemetryRoutes");
-// const tripRoutes = require("./routes/tripRoutes");
+const tripRoutes = require("./routes/tripRoutes");
 
 require("dotenv").config();
 
@@ -19,7 +19,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/vehicles", vehicleRoutes);
 app.use("/api/drivers", driverRoutes);
 app.use("/api/telemetry", telemetryRoutes);
-// app.use("/api/trips", tripRoutes);
+app.use("/api/trips", tripRoutes);
 
 app.get("/", (req, res) => {
   res.json({
