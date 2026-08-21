@@ -1,0 +1,53 @@
+const pool = require("../config/db");
+
+const checkOverspeed = async (vehicle_id, speed) => {
+  try {
+    if (speed > 80) {
+      //1.check existing alert
+      const existingAlert = await pool.query(
+        `SELECT *
+         FROM alerts
+         WHERE vehicle_id = $1
+         AND alert_type = 'overspeed'
+         AND is_resolved = false
+         LIMIT 1`,
+        [vehicle_id],
+      );
+      console.log("Existing alert:", existingAlert.rows);
+
+      //2.if alert aleready exist
+      if (existingAlert.rows.length > 0) {
+        return existingAlert.rows[0];
+      }
+
+      //3. otherwise create new alert
+      const result = await pool.query(
+        `INSERT INTO alerts (
+          vehicle_id,
+          alert_type,
+          message,
+          severity,
+          is_resolved
+        )
+        VALUES ($1, $2, $3, $4, $5)
+        RETURNING *`,
+        [
+          vehicle_id,
+          "overspeed",
+          "Vehicle exceeded the speed limit",
+          "high",
+          false,
+        ],
+      );
+
+      return result.rows[0];
+    }
+
+    return null;
+  } catch (error) {
+    console.log("Overspeed alert error:", error);
+    throw error;
+  }
+};
+
+module.exports = { checkOverspeed };
