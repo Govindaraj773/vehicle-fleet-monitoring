@@ -78,11 +78,11 @@ const checkLowFuel = async (vehicle_id, fuel_level) => {
     if (fuel_level < 10) {
       const existingAlert = await pool.query(
         `SELECT *
-   FROM alerts
-   WHERE vehicle_id = $1
-   AND alert_type = 'low_fuel'
-   AND is_resolved = false
-   LIMIT 1`,
+         FROM alerts
+         WHERE vehicle_id = $1
+         AND alert_type = 'low_fuel'
+         AND is_resolved = false
+         LIMIT 1`,
         [vehicle_id],
       );
 
@@ -112,4 +112,50 @@ const checkLowFuel = async (vehicle_id, fuel_level) => {
   }
 };
 
-module.exports = { checkOverspeed, checkLowFuel };
+const checkBatteryLevel = async (vehicle_id, battery_level) => {
+  try {
+    if (battery_level < 20) {
+      const existingAlert = await pool.query(
+        `SELECT *
+         FROM alerts
+         WHERE vehicle_id = $1
+         AND alert_type = 'low_battery'
+         AND is_resolved = false
+         LIMIT 1`,
+        [vehicle_id],
+      );
+
+      if (existingAlert.rows.length > 0) {
+        return existingAlert.rows[0];
+      }
+
+      const result = await pool.query(
+        `INSERT INTO alerts (
+          vehicle_id,
+          alert_type,
+          message,
+          severity,
+          is_resolved
+        )
+        VALUES ($1, $2, $3, $4, $5)
+        RETURNING *`,
+        [
+          vehicle_id,
+          "low_battery",
+          "Vehicle battery level is low",
+          "high",
+          false,
+        ],
+      );
+
+      return result.rows[0];
+    }
+
+    return null;
+  } catch (error) {
+    console.log("Low battery level error:", error);
+    throw error;
+  }
+};
+
+module.exports = { checkOverspeed, checkLowFuel, checkBatteryLevel };
