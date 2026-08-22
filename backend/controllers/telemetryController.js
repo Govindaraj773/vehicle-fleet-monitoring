@@ -3,6 +3,7 @@ const {
   checkLowFuel,
   checkBatteryLevel,
   checkEngineTemperature,
+  checkIdleVehicle,
 } = require("../services/alertService");
 const pool = require("../config/db");
 
@@ -62,6 +63,11 @@ const createTelemetry = async (req, res) => {
       vehicle_id,
       engine_temperature,
     );
+    const checkVehicleIdleAlert = await checkIdleVehicle(
+      vehicle_id,
+      ignition,
+      speed,
+    );
 
     res.status(201).json({
       message: "Telemetry data created successfully",
@@ -70,6 +76,7 @@ const createTelemetry = async (req, res) => {
       lowFuelAlert: lowFuelAlert,
       lowBatteryAlert: lowBatteryAlert,
       highTemperatureAlert: highTemperatureAlert,
+      checkVehicleIdleAlert: checkVehicleIdleAlert,
     });
   } catch (error) {
     console.log(error);

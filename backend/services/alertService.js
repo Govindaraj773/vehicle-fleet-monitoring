@@ -174,9 +174,49 @@ const checkEngineTemperature = async (vehicle_id, engine_temperature) => {
   }
 };
 
+const checkIdleVehicle = async (vehicle_id, ignition, speed) => {
+  try {
+    if (ignition === true && speed === 0) {
+      const existingAlert = await pool.query(
+        `SELECT * FROM alerts
+        WHERE vehicle_id = $1
+        AND alert_type = 'idle_vehicle'
+        AND is_resolved = false
+        LIMIT 1`,
+        [vehicle_id],
+      );
+      if (existingAlert.rows.length > 0) {
+        return existingAlert.rows[0];
+      }
+      const result = await pool.query(
+        `INSERT INTO alerts (
+        vehicle_id,
+        alert_type,
+        message,
+        severity,
+        is_resolved)
+        VALUES($1,$2,$3,$4,$5)
+        RETURNING *`,
+        [
+          vehicle_id,
+          "idle_vehicle",
+          "Vehicle is stationary while ignition is ON",
+          "medium",
+          false,
+        ],
+      );
+      return result.rows[0];
+    }
+    return null;
+  } catch (error) {
+    console.log("Vehicle idle error", error);
+  }
+};
+
 module.exports = {
   checkOverspeed,
   checkLowFuel,
   checkBatteryLevel,
   checkEngineTemperature,
+  checkIdleVehicle,
 };
