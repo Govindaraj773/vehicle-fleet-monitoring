@@ -50,29 +50,6 @@ const checkOverspeed = async (vehicle_id, speed) => {
   }
 };
 
-// const checkLowFuel = async (vehicle_id, fuel_level) => {
-//   try {
-//     if (fuel_level < 10) {
-//       const result = await pool.query(
-//         `INSERT INTO alerts(
-//             vehicle_id,
-//             alert_type,
-//             message,
-//             sovernity,
-//             is_resolved
-//             VALUES(1$,2$,3$,4$,5$)
-//             RETURNING *`,
-//         [vehicle_id, "low fuel", "Low fuel alert", "High", false],
-//       );
-//       return result.rows[0];
-//     }
-//     return null;
-//   } catch (error) {
-//     console.log("Low fuel alert", error);
-//     throw error;
-//   }
-// };
-
 const checkLowFuel = async (vehicle_id, fuel_level) => {
   try {
     if (fuel_level < 10) {
@@ -158,4 +135,48 @@ const checkBatteryLevel = async (vehicle_id, battery_level) => {
   }
 };
 
-module.exports = { checkOverspeed, checkLowFuel, checkBatteryLevel };
+const checkEngineTemperature = async (vehicle_id, engine_temperature) => {
+  try {
+    if (engine_temperature > 90) {
+      const existingAlert = await pool.query(
+        `SELECT * FROM alerts 
+        WHERE vehicle_id = $1 
+        AND alert_type = 'high_temperature' 
+        AND is_resolved = false 
+        LIMIT 1`,
+        [vehicle_id],
+      );
+      if (existingAlert.rows.length > 0) {
+        return existingAlert.rows[0];
+      }
+      const result = await pool.query(
+        `INSERT INTO alerts(
+        vehicle_id,
+        alert_type,
+        message,
+        severity,
+        is_resolved)
+        VALUES ($1,$2,$3,$4,$5)
+        RETURNING *`,
+        [
+          vehicle_id,
+          "high_temperature",
+          "Critical Engine Temperature!",
+          "Critical",
+          false,
+        ],
+      );
+      return result.rows[0];
+    }
+    return null;
+  } catch (error) {
+    console.log("Engine critical temperature!", error);
+  }
+};
+
+module.exports = {
+  checkOverspeed,
+  checkLowFuel,
+  checkBatteryLevel,
+  checkEngineTemperature,
+};
