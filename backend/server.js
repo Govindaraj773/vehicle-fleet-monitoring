@@ -8,7 +8,8 @@ const driverRoutes = require("./routes/driverRoutes");
 const telemetryRoutes = require("./routes/telemetryRoutes");
 const tripRoutes = require("./routes/tripRoutes");
 const alertsRoutes = require("./routes/alertsRoutes");
-
+// const startJobs = require("./jobs/jobRunner");
+const { startOfflineVehicleJobs } = require("./jobs/offlineVehicleJobs");
 require("dotenv").config();
 
 const app = express();
@@ -22,6 +23,8 @@ app.use("/api/drivers", driverRoutes);
 app.use("/api/telemetry", telemetryRoutes);
 app.use("/api/trips", tripRoutes);
 app.use("/api/alerts", alertsRoutes);
+
+// startJobs();
 
 app.get("/", (req, res) => {
   res.json({
@@ -51,4 +54,6 @@ const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+
+  startOfflineVehicleJobs();
 });
