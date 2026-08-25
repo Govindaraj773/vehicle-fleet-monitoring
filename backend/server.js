@@ -10,6 +10,7 @@ const tripRoutes = require("./routes/tripRoutes");
 const alertsRoutes = require("./routes/alertsRoutes");
 // const startJobs = require("./jobs/jobRunner");
 const { startOfflineVehicleJobs } = require("./jobs/offlineVehicleJobs");
+const { checkOverSpeedVehicleJob } = require("./jobs/overspeedVehicleJob");
 require("dotenv").config();
 
 const app = express();
@@ -56,4 +57,5 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 
   startOfflineVehicleJobs();
+  checkOverSpeedVehicleJob();
 });
