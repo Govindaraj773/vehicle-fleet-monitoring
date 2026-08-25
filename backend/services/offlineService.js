@@ -1,4 +1,3 @@
-
 const pool = require("../config/db");
 
 const checkOfflineVehicles = async () => {
@@ -22,6 +21,29 @@ const checkOfflineVehicles = async () => {
 
       return differenceInMinutes > 5;
     });
+
+    const onlineVehicles = result.rows.filter((vehicle) => {
+      const lastTelemetryTime = new Date(vehicle.recorded_at);
+
+      const differenceInMilliseconds = currentTime - lastTelemetryTime;
+
+      const differenceInMinutes = differenceInMilliseconds / (1000 * 60);
+
+      return differenceInMinutes <= 5;
+    });
+
+    for (const vehicle of onlineVehicles) {
+      await pool.query(
+        `
+    UPDATE alerts
+    SET is_resolved = true
+    WHERE vehicle_id = $1
+    AND alert_type = 'vehicle_offline'
+    AND is_resolved = false
+    `,
+        [vehicle.vehicle_id],
+      );
+    }
 
     for (const vehicle of offlineVehicles) {
       const existingAlert = await pool.query(
