@@ -34,7 +34,7 @@ const checkOverSpeedVehicles = async () => {
         [vehicle.vehicle_id],
       );
     }
-    
+
     console.log("Overspeed vehicles:", overspeedVehicles);
 
     for (const vehicle of overspeedVehicles) {

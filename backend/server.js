@@ -11,6 +11,7 @@ const alertsRoutes = require("./routes/alertsRoutes");
 // const startJobs = require("./jobs/jobRunner");
 const { startOfflineVehicleJobs } = require("./jobs/offlineVehicleJobs");
 const { checkOverSpeedVehicleJob } = require("./jobs/overspeedVehicleJob");
+const { checkLowFuelJob } = require("./jobs/lowFuelJob");
 require("dotenv").config();
 
 const app = express();
@@ -58,4 +59,5 @@ app.listen(PORT, () => {
 
   startOfflineVehicleJobs();
   checkOverSpeedVehicleJob();
+  checkLowFuelJob();
 });
