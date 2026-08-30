@@ -15,6 +15,7 @@ const { checkOverSpeedVehicleJob } = require("./jobs/overspeedVehicleJob");
 const { checkLowFuelJob } = require("./jobs/lowFuelJob");
 const { checkLowBatteryJob } = require("./jobs/lowBatteryJob");
 const { checkEngineTemeratureJob } = require("./jobs/engineTemperatureJob");
+const { checkIdleVehicleJob } = require("./jobs/idleVehicleJob");
 
 require("dotenv").config();
 
@@ -66,4 +67,5 @@ app.listen(PORT, () => {
   checkLowFuelJob();
   checkLowBatteryJob();
   checkEngineTemeratureJob();
+  checkIdleVehicleJob();
 });
