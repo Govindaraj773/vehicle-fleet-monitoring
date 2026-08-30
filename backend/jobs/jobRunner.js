@@ -1,15 +1,21 @@
-const offlineVehicleJob = require("./offlineVehicleJobs");
+const { startOfflineVehicleJobs } = require("./offlineVehicleJobs");
+const { checkOverSpeedVehicleJob } = require("./overspeedVehicleJob");
+const { checkLowFuelJob } = require("./lowFuelJob");
+const { checkLowBatteryJob } = require("./lowBatteryJob");
+const { checkEngineTemeratureJob } = require("./engineTemperatureJob");
+const { checkIdleVehicleJob } = require("./idleVehicleJob");
 
-const startJobs = () => {
-  console.log("Background jobs started...");
+const startAllJobs = () => {
+  startOfflineVehicleJobs();
+  checkOverSpeedVehicleJob();
+  checkLowFuelJob();
+  checkLowBatteryJob();
+  checkEngineTemeratureJob();
+  checkIdleVehicleJob();
 
-  setInterval(async () => {
-    try {
-      await offlineVehicleJob();
-    } catch (error) {
-      console.error("Offline vehicle job error:", error.message);
-    }
-  }, 60 * 1000); // runs every 1 minute
+  console.log("All vehicle monitoring jobs started");
 };
 
-module.exports = startJobs;
+module.exports = {
+  startAllJobs,
+};
