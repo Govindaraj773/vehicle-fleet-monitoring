@@ -188,9 +188,61 @@ const getTripsDashboard = async (req, res) => {
   }
 };
 
+const getTelemetryHistory = async (req, res) => {
+  try {
+    const { vehicleId } = req.params;
+
+    // Check whether vehicle exists
+    const vehicleResult = await pool.query(
+      "SELECT id, vehicle_number FROM vehicles WHERE id = $1",
+      [vehicleId],
+    );
+
+    if (vehicleResult.rows.length === 0) {
+      return res.status(404).json({
+        message: "Vehicle not found",
+        vehicleId,
+      });
+    }
+
+    //Telemetry history for the vehicle
+    const result = await pool.query(
+      `SELECT 
+        id,
+        vehicle_id,
+        latitude,
+        longitude,
+        speed,
+        fuel_level,
+        battery_level,
+        engine_temperature,
+        ignition,
+        odometer,
+        recorded_at
+      FROM telemetry
+      WHERE vehicle_id = $1
+      ORDER BY recorded_at DESC
+      LIMIT 50`,
+      [vehicleId],
+    );
+    res.status(200).json({
+      totalRecords: result.rows.length,
+      vehicleId,
+      telemetry: result.rows,
+    });
+  } catch (error) {
+    console.error("Telemetry History Error:", error);
+    res.status(500).json({
+      message: "Failed to fetch telemetry history",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   getDashboardSummary,
   getVehicleDashboard,
   getAlertsDashboard,
   getTripsDashboard,
+  getTelemetryHistory,
 };
