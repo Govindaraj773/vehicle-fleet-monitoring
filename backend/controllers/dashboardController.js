@@ -103,6 +103,7 @@ const getVehicleDashboard = async (req, res) => {
     `);
 
     res.status(200).json({
+      totalVehicles: result.rows.length,
       vehicles: result.rows,
     });
   } catch (error) {
@@ -134,6 +135,7 @@ const getAlertsDashboard = async (req, res) => {
       `);
 
     res.status(200).json({
+      totalAlerts: result.rows.length,
       alerts: result.rows,
     });
   } catch (error) {
@@ -146,8 +148,49 @@ const getAlertsDashboard = async (req, res) => {
   }
 };
 
+const getTripsDashboard = async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT
+        t.id AS trip_id,
+        t.vehicle_id,
+        v.vehicle_number,
+        t.driver_id,
+        d.name AS driver_name,
+        t.start_latitude,
+        t.start_longitude,
+        t.end_latitude,
+        t.end_longitude,
+        t.start_time,
+        t.end_time,
+        t.distance_km,
+        t.status,
+        t.created_at
+      FROM trips t
+      LEFT JOIN vehicles v
+        ON t.vehicle_id = v.id
+      LEFT JOIN drivers d
+        ON t.driver_id = d.id
+      ORDER BY t.created_at DESC;
+    `);
+
+    res.status(200).json({
+      totalTrips: result.rows.length,
+      trips: result.rows,
+    });
+  } catch (error) {
+    console.error("Trips Dashboard Error:", error);
+
+    res.status(500).json({
+      message: "Failed to fetch trips dashboard data",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   getDashboardSummary,
   getVehicleDashboard,
   getAlertsDashboard,
+  getTripsDashboard,
 };
