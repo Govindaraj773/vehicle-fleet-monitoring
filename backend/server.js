@@ -12,6 +12,7 @@ const driverRoutes = require("./routes/driverRoutes");
 const telemetryRoutes = require("./routes/telemetryRoutes");
 const tripRoutes = require("./routes/tripRoutes");
 const alertsRoutes = require("./routes/alertsRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
 
 const { startAllJobs } = require("./jobs/jobRunner");
 
@@ -28,6 +29,7 @@ app.use("/api/drivers", driverRoutes);
 app.use("/api/telemetry", telemetryRoutes);
 app.use("/api/trips", tripRoutes);
 app.use("/api/alerts", alertsRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 app.get("/", (req, res) => {
   res.json({
