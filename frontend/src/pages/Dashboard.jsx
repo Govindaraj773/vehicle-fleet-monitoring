@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent, Typography, Grid } from "@mui/material";
+import { Card, CardContent, Typography, Grid, Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
+  const navigate = useNavigate();
   const [summary, setSummary] = useState(null);
 
   useEffect(() => {
@@ -102,6 +104,7 @@ function Dashboard() {
           </Grid>
         </div>
       )}
+      <Button onClick={() => navigate("/vehicles")}>View All Vehicles</Button>
     </div>
   );
 }
