@@ -29,6 +29,7 @@ import {
   Grid,
   Stack,
   Typography,
+  TextField,
 } from "@mui/material";
 
 const MapUpdater = ({ latitude, longitude }) => {
@@ -48,8 +49,33 @@ const VehicleDetails = () => {
   const navigate = useNavigate();
 
   const vehicle = location.state?.vehicle;
+  const editMode = location.state?.editMode;
+  console.log("Edit Mode:", editMode);
 
   const [telemetry, setTelemetry] = useState([]);
+  const [formData, setFormData] = useState({
+    vehicle_number: "",
+    vehicle_type: "",
+    manufacturer: "",
+    model: "",
+    year: "",
+    driver_id: "",
+    status: "",
+  });
+
+  useEffect(() => {
+    if (editMode && vehicle) {
+      setFormData({
+        vehicle_number: vehicle.vehicle_number || "",
+        vehicle_type: vehicle.vehicle_type || "",
+        manufacturer: vehicle.manufacturer || "",
+        model: vehicle.model || "",
+        year: vehicle.year || "",
+        driver_id: vehicle.driver_id || "",
+        status: vehicle.status || "",
+      });
+    }
+  }, [editMode, vehicle]);
 
   useEffect(() => {
     const fetchTelemetry = async () => {
@@ -247,6 +273,223 @@ const VehicleDetails = () => {
             </Card>
           </Grid>
 
+          {/* edit the vehicle details */}
+          {editMode && (
+            <Grid item xs={12}>
+              <Card
+                sx={{
+                  mb: 4,
+                  borderRadius: 3,
+                  boxShadow: 2,
+                }}
+              >
+                <CardContent sx={{ p: 3 }}>
+                  <Typography variant="h6" fontWeight={600} mb={3}>
+                    Edit Vehicle
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mb: 3 }}
+                  >
+                    Update the vehicle information below.
+                  </Typography>
+
+                  {/* All textfields */}
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        label="Vehicle Number"
+                        value={formData.vehicle_number}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            vehicle_number: e.target.value,
+                          })
+                        }
+                        fullWidth
+                      />
+                    </Grid>
+
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        label="Vehicle Type"
+                        value={formData.vehicle_type}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            vehicle_type: e.target.value,
+                          })
+                        }
+                        fullWidth
+                      />
+                    </Grid>
+
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        label="Manufacturer"
+                        value={formData.manufacturer}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            manufacturer: e.target.value,
+                          })
+                        }
+                        fullWidth
+                      />
+                    </Grid>
+
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        label="Model"
+                        value={formData.model}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            model: e.target.value,
+                          })
+                        }
+                        fullWidth
+                      />
+                    </Grid>
+
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        label="Year"
+                        type="number"
+                        value={formData.year}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            year: e.target.value,
+                          })
+                        }
+                        fullWidth
+                      />
+                    </Grid>
+
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        label="Driver ID"
+                        value={formData.driver_id}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            driver_id: e.target.value,
+                          })
+                        }
+                        fullWidth
+                      />
+                    </Grid>
+
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        label="Status"
+                        value={formData.status}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            status: e.target.value,
+                          })
+                        }
+                        fullWidth
+                      />
+                    </Grid>
+                  </Grid>
+                  <Stack
+                    direction="row"
+                    justifyContent="flex-end"
+                    sx={{ mt: 3 }}
+                  >
+                    {/* <Button
+                      variant="contained"
+                      sx={{ textTransform: "none", borderRadius: 2, px: 3 }}
+                      onClick={async () => {
+                        try {
+                          const token = localStorage.getItem("token");
+                          const response = await fetch(
+                            `http://localhost:5000/api/vehicles/${vehicle.id}`,
+                            {
+                              method: "PUT",
+                              headers: {
+                                "Content-Type": "application/json",
+                                Authorization: `Bearer ${token}`,
+                              },
+                              body: JSON.stringify(formData),
+                            },
+                          );
+                          const data = await response.json();
+                          console.log("Update Vehicle Response", data);
+
+                          if (!response.ok) {
+                            alert(data.message || "Failed to update vehicle");
+                            return;
+                          }
+                          alert("Vehicle Updated Successfully!");
+                          navigate("/vehicles");
+                        } catch (error) {
+                          console.error("Update Vehicle Error...", error);
+                          alert(
+                            "Something went wrong while updating vehicles!",
+                          );
+                        }
+                      }}
+                    >
+                      Update Vehicle
+                    </Button> */}
+                    <Button
+                      variant="contained"
+                      sx={{
+                        textTransform: "none",
+                        borderRadius: 2,
+                        px: 3,
+                      }}
+                      onClick={async () => {
+                        try {
+                          const token = localStorage.getItem("token");
+
+                          const response = await fetch(
+                            `http://localhost:5000/api/vehicles/${vehicle.id}`,
+                            {
+                              method: "PUT",
+                              headers: {
+                                "Content-Type": "application/json",
+                                Authorization: `Bearer ${token}`,
+                              },
+                              body: JSON.stringify(formData),
+                            },
+                          );
+
+                          const data = await response.json();
+
+                          console.log("Update Vehicle Response:", data);
+
+                          if (!response.ok) {
+                            alert(data.message || "Failed to update vehicle");
+                            return;
+                          }
+
+                          alert("Vehicle updated successfully");
+
+                          navigate("/vehicles");
+                        } catch (error) {
+                          console.error("Update Vehicle Error:", error);
+                          alert(error.message);
+                          // alert(
+                          //   "Something went wrong while updating the vehicle",
+                          // );
+                        }
+                      }}
+                    >
+                      Update Vehicle
+                    </Button>
+                  </Stack>
+                </CardContent>
+              </Card>
+            </Grid>
+          )}
+
+          {/* live telemetry */}
           <Grid item xs={12}>
             <Card>
               <CardContent>

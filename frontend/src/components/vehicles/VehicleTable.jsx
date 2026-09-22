@@ -185,6 +185,23 @@ const VehicleTable = ({ vehicles }) => {
                     >
                       View
                     </Button>
+
+                    {/* edit the vehicle data */}
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      sx={{ ml: 1 }}
+                      onClick={() =>
+                        navigate(`/vehicles/${vehicle.id}`, {
+                          state: {
+                            vehicle,
+                            editMode: true,
+                          },
+                        })
+                      }
+                    >
+                      Edit
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))

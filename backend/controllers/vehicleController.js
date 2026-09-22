@@ -40,8 +40,8 @@ const createVehicle = async (req, res) => {
         vehicleType,
         manufacturer,
         model,
-        year,
-        driver_id,
+        year === "" ? null : year,
+        driver_id === "" ? null : driver_id,
         status,
       ],
     );
@@ -120,6 +120,86 @@ const getVehicleById = async (req, res) => {
 };
 
 // Update vehicle
+// const updateVehicle = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+
+//     // Validate ID
+//     if (!Number.isInteger(Number(id)) || Number(id) <= 0) {
+//       return res.status(400).json({
+//         message: "Invalid vehicle ID",
+//       });
+//     }
+
+//     const {
+//       vehicle_number,
+//       vehicle_type,
+//       manufacturer,
+//       model,
+//       year,
+//       driver_id,
+//       status,
+//     } = req.body;
+
+//     const vehicleNumber = vehicle_number?.trim();
+//     const vehicleType = vehicle_type?.trim();
+
+//     // Validate required fields
+//     if (!vehicleNumber || !vehicleType) {
+//       return res.status(400).json({
+//         message: "Vehicle number and vehicle type are required",
+//       });
+//     }
+
+//     const result = await pool.query(
+//       `UPDATE vehicles
+//        SET vehicle_number = $1,
+//            vehicle_type = $2,
+//            manufacturer = $3,
+//            model = $4,
+//            year = $5,
+//            driver_id = $6,
+//            status = $7
+//        WHERE id = $8
+//        RETURNING *`,
+//       [
+//         vehicleNumber,
+//         vehicleType,
+//         manufacturer,
+//         model,
+//         year,
+//         driver_id,
+//         status,
+//         id,
+//       ],
+//     );
+
+//     if (result.rows.length === 0) {
+//       return res.status(404).json({
+//         message: "Vehicle not found",
+//       });
+//     }
+
+//     return res.status(200).json({
+//       message: "Vehicle updated successfully",
+//       vehicle: result.rows[0],
+//     });
+//   } catch (error) {
+//     console.error("Update vehicle error:", error);
+
+//     // Duplicate vehicle number
+//     if (error.code === "23505") {
+//       return res.status(409).json({
+//         message: "Vehicle number already exists",
+//       });
+//     }
+
+//     return res.status(500).json({
+//       message: "Server error",
+//     });
+//   }
+// };
+
 const updateVehicle = async (req, res) => {
   try {
     const { id } = req.params;
@@ -151,6 +231,26 @@ const updateVehicle = async (req, res) => {
       });
     }
 
+    // Convert empty values to null for INTEGER columns
+    const vehicleYear = year === "" || year == null ? null : Number(year);
+
+    const driverId =
+      driver_id === "" || driver_id == null ? null : Number(driver_id);
+
+    // Validate year
+    if (vehicleYear !== null && !Number.isInteger(vehicleYear)) {
+      return res.status(400).json({
+        message: "Year must be a valid integer",
+      });
+    }
+
+    // Validate driver ID
+    if (driverId !== null && !Number.isInteger(driverId)) {
+      return res.status(400).json({
+        message: "Driver ID must be a valid integer",
+      });
+    }
+
     const result = await pool.query(
       `UPDATE vehicles
        SET vehicle_number = $1,
@@ -167,10 +267,10 @@ const updateVehicle = async (req, res) => {
         vehicleType,
         manufacturer,
         model,
-        year,
-        driver_id,
+        vehicleYear,
+        driverId,
         status,
-        id,
+        Number(id),
       ],
     );
 
