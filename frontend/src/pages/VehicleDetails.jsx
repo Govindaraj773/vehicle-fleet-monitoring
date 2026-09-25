@@ -396,6 +396,7 @@ const VehicleDetails = () => {
                       />
                     </Grid>
                   </Grid>
+
                   <Stack
                     direction="row"
                     justifyContent="flex-end"
@@ -437,6 +438,7 @@ const VehicleDetails = () => {
                     >
                       Update Vehicle
                     </Button> */}
+                    {/* Update vehicle button */}
                     <Button
                       variant="contained"
                       sx={{
@@ -482,6 +484,50 @@ const VehicleDetails = () => {
                       }}
                     >
                       Update Vehicle
+                    </Button>
+
+                    {/* Delete vehicle button */}
+                    <Button
+                      variant="contained"
+                      sx={{
+                        textTransform: "none",
+                        borderRadius: 2,
+                        px: 3,
+                      }}
+                      onClick={async () => {
+                        const confirmed = window.confirm(
+                          `Are you sure you want to delete vehicle ${vehicle.vehicle_number}?`,
+                        );
+                        if (!confirmed) {
+                          return;
+                        }
+                        try {
+                          const token = localStorage.getItem("token");
+                          const response = await fetch(
+                            `http://localhost:5000/api/vehicles/${vehicle.id}`,
+                            {
+                              method: "DELETE",
+                              headers: {
+                                Authorization: `Bearer ${token}`,
+                              },
+                            },
+                          );
+                          const data = response.json();
+                          console.log("Vehicle deleted response:", data);
+
+                          if (!response.ok) {
+                            alert(data.message || "Failed to delete vehicle");
+                            return;
+                          }
+                          alert("Vehicle Deleted successfully");
+                          navigate("/vehicles");
+                        } catch (error) {
+                          console.error("Delete vehicle error:", error);
+                          alert("SOmething went wrong while deleting vehicle");
+                        }
+                      }}
+                    >
+                      Delete Vehicle
                     </Button>
                   </Stack>
                 </CardContent>
