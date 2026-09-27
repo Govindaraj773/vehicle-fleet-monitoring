@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Chip,
   Paper,
   Table,
@@ -10,43 +11,73 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import RefreshIcon from "@mui/icons-material/Refresh";
+
 import { useEffect, useState } from "react";
 
 const Alerts = () => {
   const [alerts, setAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchAlerts = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(`http://localhost:5000/api/alerts`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const data = await response.json();
-        console.log("Alerts response", data);
+  const fetchAlerts = async () => {
+    try {
+      setLoading(true);
 
-        if (response.ok) {
-          setAlerts(data.alerts || []);
-        }
-      } catch (error) {
-        console.error("Failed to fetch alerts", error);
-      } finally {
-        setLoading(false);
+      const token = localStorage.getItem("token");
+
+      const response = await fetch("http://localhost:5000/api/alerts", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      console.log("Alerts response", data);
+
+      if (response.ok) {
+        setAlerts(data.alerts || []);
       }
-    };
+    } catch (error) {
+      console.error("Failed to fetch alerts", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchAlerts();
   }, []);
+
   return (
     <div>
       <Box sx={{ p: 3 }}>
-        <Typography variant="h4" fontWeight="bold">
-          Alerts
-        </Typography>
-        <Typography variant="body1" sx={{ mt: 1 }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Typography variant="h4" fontWeight="bold">
+            Alerts
+          </Typography>
+
+          {/* <Button variant="contained" onClick={fetchAlerts} disabled={loading}>
+            {loading ? "Refreshing..." : "Refresh"}
+          </Button> */}
+          <Button
+            variant="contained"
+            onClick={fetchAlerts}
+            disabled={loading}
+            startIcon={<RefreshIcon />}
+          >
+            Refresh
+          </Button>
+        </Box>
+
+        <Typography variant="body1" sx={{ mt: 1, mb: 3 }}>
           Monitor and manage vehicle alerts
         </Typography>
 
@@ -80,9 +111,13 @@ const Alerts = () => {
                 alerts.map((alert) => (
                   <TableRow key={alert.id}>
                     <TableCell>{alert.id}</TableCell>
+
                     <TableCell>{alert.vehicle_id}</TableCell>
+
                     <TableCell>{alert.alert_type}</TableCell>
+
                     <TableCell>{alert.message}</TableCell>
+
                     <TableCell>
                       <Chip
                         label={alert.severity}
@@ -96,6 +131,7 @@ const Alerts = () => {
                         }
                       />
                     </TableCell>
+
                     <TableCell>
                       <Chip
                         label={alert.is_resolved ? "Resolved" : "Active"}
