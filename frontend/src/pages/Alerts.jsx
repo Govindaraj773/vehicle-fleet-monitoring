@@ -12,10 +12,13 @@ import {
   Typography,
 } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { useNavigate } from "react-router-dom";
 
 import { useEffect, useState } from "react";
 
 const Alerts = () => {
+  const navigate = useNavigate();
   const [alerts, setAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -60,6 +63,13 @@ const Alerts = () => {
             alignItems: "center",
           }}
         >
+          <Button
+            startIcon={<ArrowBackIcon />}
+            onClick={() => navigate("/")}
+            sx={{ mb: 2 }}
+          >
+            Back to Dashboard
+          </Button>
           <Typography variant="h4" fontWeight="bold">
             Alerts
           </Typography>
@@ -85,12 +95,36 @@ const Alerts = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>ID</TableCell>
-                <TableCell>Vehicle</TableCell>
-                <TableCell>Alert Type</TableCell>
-                <TableCell>Message</TableCell>
-                <TableCell>Severity</TableCell>
-                <TableCell>Resolved</TableCell>
+                <TableCell
+                  sx={{ fontWeight: "bold", backgroundColor: "grey.100" }}
+                >
+                  ID
+                </TableCell>
+                <TableCell
+                  sx={{ fontWeight: "bold", backgroundColor: "grey.100" }}
+                >
+                  Vehicle
+                </TableCell>
+                <TableCell
+                  sx={{ fontWeight: "bold", backgroundColor: "grey.100" }}
+                >
+                  Alert Type
+                </TableCell>
+                <TableCell
+                  sx={{ fontWeight: "bold", backgroundColor: "grey.100" }}
+                >
+                  Message
+                </TableCell>
+                <TableCell
+                  sx={{ fontWeight: "bold", backgroundColor: "grey.100" }}
+                >
+                  Severity
+                </TableCell>
+                <TableCell
+                  sx={{ fontWeight: "bold", backgroundColor: "grey.100" }}
+                >
+                  Resolved
+                </TableCell>
               </TableRow>
             </TableHead>
 
