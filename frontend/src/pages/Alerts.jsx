@@ -4,6 +4,7 @@ import {
   Chip,
   Paper,
   FormControl,
+  Pagination,
   InputLabel,
   Select,
   MenuItem,
@@ -26,6 +27,8 @@ const Alerts = () => {
   const [alerts, setAlerts] = useState([]);
   const [severityFilter, setSeverityFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [page, setPage] = useState(1);
+  const alertsPerPage = 25;
   const [loading, setLoading] = useState(true);
 
   const fetchAlerts = async () => {
@@ -59,6 +62,11 @@ const Alerts = () => {
     fetchAlerts();
   }, []);
 
+  // Suppose we are on page 3, then select Critical, enough critical alerts for 1 page. The table could become empty because you're still on page 3.
+  useEffect(() => {
+    setPage(1);
+  }, [severityFilter, statusFilter]);
+
   //filtered alerts
   // const filteredAlerts =
   //   severityFilter === "all"
@@ -78,9 +86,23 @@ const Alerts = () => {
     return severityMatch && statusMatch;
   });
 
+  const startIndex = (page - 1) * alertsPerPage;
+
+  // pagination
+  const paginatedAlerts = filteredAlerts.slice(
+    startIndex,
+    startIndex + alertsPerPage,
+  );
+
   return (
     <div>
-      <Box sx={{ p: 3 }}>
+      <Box
+        sx={{
+          p: 3,
+          minHeight: "100vh",
+          backgroundColor: "#1b1212",
+        }}
+      >
         <Box
           sx={{
             display: "flex",
@@ -93,17 +115,17 @@ const Alerts = () => {
             onClick={() => navigate("/")}
             sx={{ mb: 2 }}
           >
-            Back to Dashboard
+            Back
           </Button>
           <Typography variant="h4" fontWeight="bold">
             Alerts
           </Typography>
 
-          {/* dropdown button */}
+          {/* severity dropdown */}
           <FormControl
             size="small"
             sx={{
-              minWidth: 180,
+              minWidth: 100,
               backgroundColor: "primary.main",
               borderRadius: 1,
             }}
@@ -121,9 +143,15 @@ const Alerts = () => {
             </Select>
           </FormControl>
 
-          {/* Status dropdown */}
-
-          <FormControl size="small" sx={{ minWidth: 160 }}>
+          {/* status dropdown */}
+          <FormControl
+            size="small"
+            sx={{
+              minWidth: 100,
+              backgroundColor: "primary.main",
+              borderRadius: 1,
+            }}
+          >
             <InputLabel>Status</InputLabel>
             <Select
               value={statusFilter}
@@ -185,6 +213,11 @@ const Alerts = () => {
                 >
                   Resolved
                 </TableCell>
+                <TableCell
+                  sx={{ fontWeight: "bold", backgroundColor: "grey.100" }}
+                >
+                  Created At
+                </TableCell>
               </TableRow>
             </TableHead>
 
@@ -202,7 +235,8 @@ const Alerts = () => {
                   </TableCell>
                 </TableRow>
               ) : (
-                filteredAlerts.map((alert) => (
+                // filteredAlerts.map((alert) => (
+                paginatedAlerts.map((alert) => (
                   <TableRow key={alert.id}>
                     <TableCell>{alert.id}</TableCell>
 
@@ -233,12 +267,42 @@ const Alerts = () => {
                         color={alert.is_resolved ? "success" : "error"}
                       />
                     </TableCell>
+
+                    <TableCell>
+                      {new Date(alert.created_at).toLocaleString()}
+                    </TableCell>
                   </TableRow>
                 ))
               )}
             </TableBody>
           </Table>
         </TableContainer>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            mt: 2,
+          }}
+        >
+          <Pagination
+            count={Math.ceil(filteredAlerts.length / alertsPerPage)}
+            page={page}
+            onChange={(event, value) => setPage(value)}
+            sx={{
+              "& .MuiPaginationItem-root": {
+                backgroundColor: "#f8fbfa",
+              },
+
+              "& .MuiPaginationItem-root.Mui-selected": {
+                backgroundColor: "#f3ff06",
+              },
+
+              "& .MuiPaginationItem-root.MuiPaginationItem-previousNext": {
+                backgroundColor: "#1306a9",
+              },
+            }}
+          />
+        </Box>
       </Box>
     </div>
   );
