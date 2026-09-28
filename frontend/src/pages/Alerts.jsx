@@ -25,6 +25,7 @@ const Alerts = () => {
   const navigate = useNavigate();
   const [alerts, setAlerts] = useState([]);
   const [severityFilter, setSeverityFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [loading, setLoading] = useState(true);
 
   const fetchAlerts = async () => {
@@ -59,10 +60,23 @@ const Alerts = () => {
   }, []);
 
   //filtered alerts
-  const filteredAlerts =
-    severityFilter === "all"
-      ? alerts
-      : alerts.filter((alert) => alert.severity === severityFilter);
+  // const filteredAlerts =
+  //   severityFilter === "all"
+  //     ? alerts
+  //     : alerts.filter((alert) => alert.severity === severityFilter);
+
+  //filter based on severity and status
+  const filteredAlerts = alerts.filter((alert) => {
+    const severityMatch =
+      severityFilter === "all" || alert.severity === severityFilter;
+
+    const statusMatch =
+      statusFilter === "all" ||
+      (statusFilter === "active" && !alert.is_resolved) ||
+      (statusFilter === "resolved" && alert.is_resolved);
+
+    return severityMatch && statusMatch;
+  });
 
   return (
     <div>
@@ -104,6 +118,21 @@ const Alerts = () => {
               <MenuItem value="critical">Critical</MenuItem>
               <MenuItem value="high">High</MenuItem>
               <MenuItem value="medium">Medium</MenuItem>
+            </Select>
+          </FormControl>
+
+          {/* Status dropdown */}
+
+          <FormControl size="small" sx={{ minWidth: 160 }}>
+            <InputLabel>Status</InputLabel>
+            <Select
+              value={statusFilter}
+              label="status"
+              onChange={(e) => setStatusFilter(e.target.value)}
+            >
+              <MenuItem value="all">All Status</MenuItem>
+              <MenuItem value="active">Active</MenuItem>
+              <MenuItem value="resolved">Resolved</MenuItem>
             </Select>
           </FormControl>
 
