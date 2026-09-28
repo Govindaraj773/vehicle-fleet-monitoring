@@ -3,6 +3,10 @@ import {
   Button,
   Chip,
   Paper,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
   Table,
   TableBody,
   TableCell,
@@ -20,6 +24,7 @@ import { useEffect, useState } from "react";
 const Alerts = () => {
   const navigate = useNavigate();
   const [alerts, setAlerts] = useState([]);
+  const [severityFilter, setSeverityFilter] = useState("all");
   const [loading, setLoading] = useState(true);
 
   const fetchAlerts = async () => {
@@ -53,6 +58,12 @@ const Alerts = () => {
     fetchAlerts();
   }, []);
 
+  //filtered alerts
+  const filteredAlerts =
+    severityFilter === "all"
+      ? alerts
+      : alerts.filter((alert) => alert.severity === severityFilter);
+
   return (
     <div>
       <Box sx={{ p: 3 }}>
@@ -74,9 +85,29 @@ const Alerts = () => {
             Alerts
           </Typography>
 
-          {/* <Button variant="contained" onClick={fetchAlerts} disabled={loading}>
-            {loading ? "Refreshing..." : "Refresh"}
-          </Button> */}
+          {/* dropdown button */}
+          <FormControl
+            size="small"
+            sx={{
+              minWidth: 180,
+              backgroundColor: "primary.main",
+              borderRadius: 1,
+            }}
+          >
+            <InputLabel>Severity</InputLabel>
+            <Select
+              value={severityFilter}
+              label="Severity"
+              onChange={(e) => setSeverityFilter(e.target.value)}
+            >
+              <MenuItem value="all">All Severities</MenuItem>
+              <MenuItem value="critical">Critical</MenuItem>
+              <MenuItem value="high">High</MenuItem>
+              <MenuItem value="medium">Medium</MenuItem>
+            </Select>
+          </FormControl>
+
+          {/* refresh button */}
           <Button
             variant="contained"
             onClick={fetchAlerts}
@@ -135,14 +166,14 @@ const Alerts = () => {
                     Loading Alerts...
                   </TableCell>
                 </TableRow>
-              ) : alerts.length === 0 ? (
+              ) : filteredAlerts.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} align="center">
                     No Alerts
                   </TableCell>
                 </TableRow>
               ) : (
-                alerts.map((alert) => (
+                filteredAlerts.map((alert) => (
                   <TableRow key={alert.id}>
                     <TableCell>{alert.id}</TableCell>
 
