@@ -10,6 +10,7 @@ import {
   TableHead,
   TableRow,
   Typography,
+  TextField,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate } from "react-router-dom";
@@ -19,6 +20,7 @@ const Trips = () => {
   const [trips, setTrips] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     const fetchTrips = async () => {
@@ -56,6 +58,18 @@ const Trips = () => {
     fetchTrips();
   }, []);
 
+  // filter and search
+  const filteredTrips = trips.filter((trip) => {
+    const searchValue = search.toLowerCase();
+
+    return (
+      String(trip.id).toLowerCase().includes(searchValue) ||
+      String(trip.vehicle_id).toLowerCase().includes(searchValue) ||
+      String(trip.driver_id || "")
+        .toLowerCase()
+        .includes(searchValue)
+    );
+  });
   return (
     <Box sx={{ p: 3 }}>
       <Box
@@ -80,6 +94,18 @@ const Trips = () => {
           Monitor and manage fleet trips
         </Typography>
       </Box>
+
+      <Box>
+        <TextField
+          label="Search trips"
+          placeholder="Search by Trip ID, Vehicle ID or Driver ID"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          size="small"
+          sx={{ mb: 2, width: 350 }}
+        />
+      </Box>
+
       {/* loading, error conditions */}
       {loading && <Typography sx={{ mb: 2 }}>Loading trips...</Typography>}
       {error && <Typography sx={{ mb: 2 }}>{error}</Typography>}
@@ -119,37 +145,44 @@ const Trips = () => {
             </TableHead>
 
             <TableBody>
-              {trips.map((trip) => (
-                <TableRow key={trip.id}>
-                  <TableCell>{trip.id}</TableCell>
-
-                  <TableCell>{trip.vehicle_id}</TableCell>
-
-                  <TableCell>{trip.driver_id || "Not Assigned"}</TableCell>
-
-                  <TableCell>
-                    {trip.start_latitude}, {trip.start_longitude}
-                  </TableCell>
-
-                  <TableCell>
-                    {trip.end_latitude}, {trip.end_longitude}
-                  </TableCell>
-
-                  <TableCell>
-                    {trip.start_time
-                      ? new Date(trip.start_time).toLocaleString()
-                      : "-"}
-                  </TableCell>
-
-                  <TableCell>
-                    {trip.end_time
-                      ? new Date(trip.end_time).toLocaleString()
-                      : "-"}
-                  </TableCell>
-
-                  <TableCell>{trip.status}</TableCell>
+              {/* if no trips found for search */}
+              {filteredTrips.length === 0 ? (
+                <TableRow>
+                  <TableCell>Trips not found</TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                filteredTrips.map((trip) => (
+                  <TableRow key={trip.id}>
+                    <TableCell>{trip.id}</TableCell>
+
+                    <TableCell>{trip.vehicle_id}</TableCell>
+
+                    <TableCell>{trip.driver_id || "Not Assigned"}</TableCell>
+
+                    <TableCell>
+                      {trip.start_latitude}, {trip.start_longitude}
+                    </TableCell>
+
+                    <TableCell>
+                      {trip.end_latitude}, {trip.end_longitude}
+                    </TableCell>
+
+                    <TableCell>
+                      {trip.start_time
+                        ? new Date(trip.start_time).toLocaleString()
+                        : "-"}
+                    </TableCell>
+
+                    <TableCell>
+                      {trip.end_time
+                        ? new Date(trip.end_time).toLocaleString()
+                        : "-"}
+                    </TableCell>
+
+                    <TableCell>{trip.status}</TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </TableContainer>
