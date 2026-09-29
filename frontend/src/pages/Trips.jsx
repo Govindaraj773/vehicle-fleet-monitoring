@@ -12,15 +12,19 @@ import {
   Typography,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Trips = () => {
   const navigate = useNavigate();
   const [trips, setTrips] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchTrips = async () => {
       try {
+        setLoading(true);
+        setError("");
         const token = localStorage.getItem("token");
 
         const response = await fetch("http://localhost:5000/api/trips", {
@@ -33,11 +37,19 @@ const Trips = () => {
 
         console.log("Trips API response:", data);
 
-        if (response.ok) {
-          setTrips(data.trips);
+        // if (response.ok) {
+        //   setTrips(data.trips);
+        // }
+
+        if (!response.ok) {
+          throw new Error(data.mesage || "Failed to fetch response");
         }
+        setTrips(data.trips || []);
       } catch (error) {
         console.error("Failed to fetch trips:", error);
+        setError(error.message || "Something went wrong!");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -68,73 +80,80 @@ const Trips = () => {
           Monitor and manage fleet trips
         </Typography>
       </Box>
-
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>
-                <strong>Trip ID</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Vehicle</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Driver</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Start Location</strong>
-              </TableCell>
-              <TableCell>
-                <strong>End Location</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Start Time</strong>
-              </TableCell>
-              <TableCell>
-                <strong>End Time</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Status</strong>
-              </TableCell>
-            </TableRow>
-          </TableHead>
-
-          <TableBody>
-            {trips.map((trip) => (
-              <TableRow key={trip.id}>
-                <TableCell>{trip.id}</TableCell>
-
-                <TableCell>{trip.vehicle_id}</TableCell>
-
-                <TableCell>{trip.driver_id || "Not Assigned"}</TableCell>
-
+      {/* loading, error conditions */}
+      {loading && <Typography sx={{ mb: 2 }}>Loading trips...</Typography>}
+      {error && <Typography sx={{ mb: 2 }}>{error}</Typography>}
+      {!loading && !error && trips.length === 0 && (
+        <Typography sx={{ mb: 2 }}>No trips found.</Typography>
+      )}
+      {!loading && !error && trips.length > 0 && (
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
                 <TableCell>
-                  {trip.start_latitude}, {trip.start_longitude}
+                  <strong>Trip ID</strong>
                 </TableCell>
-
                 <TableCell>
-                  {trip.end_latitude}, {trip.end_longitude}
+                  <strong>Vehicle</strong>
                 </TableCell>
-
                 <TableCell>
-                  {trip.start_time
-                    ? new Date(trip.start_time).toLocaleString()
-                    : "-"}
+                  <strong>Driver</strong>
                 </TableCell>
-
                 <TableCell>
-                  {trip.end_time
-                    ? new Date(trip.end_time).toLocaleString()
-                    : "-"}
+                  <strong>Start Location</strong>
                 </TableCell>
-
-                <TableCell>{trip.status}</TableCell>
+                <TableCell>
+                  <strong>End Location</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Start Time</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>End Time</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Status</strong>
+                </TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+
+            <TableBody>
+              {trips.map((trip) => (
+                <TableRow key={trip.id}>
+                  <TableCell>{trip.id}</TableCell>
+
+                  <TableCell>{trip.vehicle_id}</TableCell>
+
+                  <TableCell>{trip.driver_id || "Not Assigned"}</TableCell>
+
+                  <TableCell>
+                    {trip.start_latitude}, {trip.start_longitude}
+                  </TableCell>
+
+                  <TableCell>
+                    {trip.end_latitude}, {trip.end_longitude}
+                  </TableCell>
+
+                  <TableCell>
+                    {trip.start_time
+                      ? new Date(trip.start_time).toLocaleString()
+                      : "-"}
+                  </TableCell>
+
+                  <TableCell>
+                    {trip.end_time
+                      ? new Date(trip.end_time).toLocaleString()
+                      : "-"}
+                  </TableCell>
+
+                  <TableCell>{trip.status}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
     </Box>
   );
 };
