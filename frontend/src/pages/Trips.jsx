@@ -215,6 +215,7 @@ const Trips = () => {
                 <TableCell>
                   <strong>Status</strong>
                 </TableCell>
+                <TableCell align="center">Actions</TableCell>
               </TableRow>
             </TableHead>
 
@@ -255,6 +256,19 @@ const Trips = () => {
                     </TableCell>
 
                     <TableCell>{trip.status}</TableCell>
+                    <TableCell align="center">
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        // onClick={() => console.log("View trip:", trip.id)}
+                        onClick={() => navigate(`/trips/${trip.id}`)}
+                        sx={{
+                          textTransform: "none",
+                        }}
+                      >
+                        View
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ))
               )}
