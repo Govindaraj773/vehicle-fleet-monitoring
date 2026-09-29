@@ -11,6 +11,10 @@ import {
   TableRow,
   Typography,
   TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate } from "react-router-dom";
@@ -21,6 +25,7 @@ const Trips = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
 
   useEffect(() => {
     const fetchTrips = async () => {
@@ -62,13 +67,18 @@ const Trips = () => {
   const filteredTrips = trips.filter((trip) => {
     const searchValue = search.toLowerCase();
 
-    return (
+    const matchsSearch =
       String(trip.id).toLowerCase().includes(searchValue) ||
       String(trip.vehicle_id).toLowerCase().includes(searchValue) ||
       String(trip.driver_id || "")
         .toLowerCase()
-        .includes(searchValue)
-    );
+        .includes(searchValue);
+
+    const matchsStatus =
+      statusFilter === "all" ||
+      String(trip.status).toLowerCase() === statusFilter;
+
+    return matchsSearch && matchsStatus;
   });
   return (
     <Box sx={{ p: 3 }}>
@@ -95,7 +105,13 @@ const Trips = () => {
         </Typography>
       </Box>
 
-      <Box>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          mb: 2,
+        }}
+      >
         <TextField
           label="Search trips"
           placeholder="Search by Trip ID, Vehicle ID or Driver ID"
@@ -104,6 +120,21 @@ const Trips = () => {
           size="small"
           sx={{ mb: 2, width: 350 }}
         />
+
+        <FormControl size="small" sx={{ width: 180, ml: 2 }}>
+          <InputLabel>Status</InputLabel>
+
+          <Select
+            value={statusFilter}
+            label="Status"
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <MenuItem value="all">All Status</MenuItem>
+            <MenuItem value="in_progress">Active</MenuItem>
+            <MenuItem value="completed">Completed</MenuItem>
+            <MenuItem value="cancelled">Cancelled</MenuItem>
+          </Select>
+        </FormControl>
       </Box>
 
       {/* loading, error conditions */}
