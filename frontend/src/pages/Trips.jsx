@@ -15,6 +15,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Pagination,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate } from "react-router-dom";
@@ -26,6 +27,8 @@ const Trips = () => {
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [page, setPage] = useState(1);
+  const [tripsPerPage] = useState(10);
 
   useEffect(() => {
     const fetchTrips = async () => {
@@ -63,6 +66,10 @@ const Trips = () => {
     fetchTrips();
   }, []);
 
+  useEffect(() => {
+    setPage(1);
+  }, [search, statusFilter]);
+
   // filter and search
   const filteredTrips = trips.filter((trip) => {
     const searchValue = search.toLowerCase();
@@ -80,6 +87,12 @@ const Trips = () => {
 
     return matchsSearch && matchsStatus;
   });
+
+  // pagination
+  const indexOfLastTrip = page * tripsPerPage;
+  const indexOfFirstTrip = indexOfLastTrip - tripsPerPage;
+  const currentTrips = filteredTrips.slice(indexOfFirstTrip, indexOfLastTrip);
+
   return (
     <Box sx={{ p: 3 }}>
       <Box
@@ -182,7 +195,8 @@ const Trips = () => {
                   <TableCell>Trips not found</TableCell>
                 </TableRow>
               ) : (
-                filteredTrips.map((trip) => (
+                // filteredTrips.map((trip) => (
+                currentTrips.map((trip) => (
                   <TableRow key={trip.id}>
                     <TableCell>{trip.id}</TableCell>
 
@@ -217,6 +231,33 @@ const Trips = () => {
             </TableBody>
           </Table>
         </TableContainer>
+      )}
+
+      {/* pagination 10 trips / page */}
+
+      {filteredTrips.length > tripsPerPage && (
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
+          <Pagination
+            count={Math.ceil(filteredTrips.length / tripsPerPage)}
+            page={page}
+            onChange={(event, value) => setPage(value)}
+            sx={{
+              "& .MuiPaginationItem-root": {
+                color: "#333",
+              },
+              "& .MuiPaginationItem-root.Mui-selected": {
+                backgroundColor: "#fff3cd",
+                color: "#333",
+              },
+              "& .MuiPaginationItem-root:hover": {
+                backgroundColor: "#fff8e1",
+              },
+              "& .MuiPaginationItem-root.Mui-selected:hover": {
+                backgroundColor: "#ffecb5",
+              },
+            }}
+          />
+        </Box>
       )}
     </Box>
   );
