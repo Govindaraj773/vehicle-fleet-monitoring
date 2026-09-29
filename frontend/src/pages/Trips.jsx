@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   Box,
+  Button,
   Paper,
   Table,
   TableBody,
@@ -10,8 +11,11 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const Trips = () => {
+  const navigate = useNavigate();
   const [trips, setTrips] = useState([]);
 
   useEffect(() => {
@@ -42,13 +46,28 @@ const Trips = () => {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Typography variant="h5" sx={{ mb: 1, fontWeight: 600 }}>
-        Trips
-      </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Button
+          startIcon={<ArrowBackIcon />}
+          onClick={() => navigate("/")}
+          sx={{ mb: 2 }}
+        >
+          Back
+        </Button>
+        <Typography variant="h5" sx={{ mb: 1, fontWeight: 600 }}>
+          Trips
+        </Typography>
 
-      <Typography variant="body2" sx={{ mb: 3, color: "text.secondary" }}>
-        Monitor and manage fleet trips
-      </Typography>
+        <Typography variant="body2" sx={{ mb: 3, color: "text.secondary" }}>
+          Monitor and manage fleet trips
+        </Typography>
+      </Box>
 
       <TableContainer component={Paper}>
         <Table>
