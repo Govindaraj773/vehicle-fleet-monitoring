@@ -122,19 +122,32 @@ const Trips = () => {
         sx={{
           display: "flex",
           alignItems: "center",
-          mb: 2,
+          gap: 2,
+          mb: 3,
+          flexWrap: "wrap",
         }}
       >
         <TextField
-          label="Search trips"
-          placeholder="Search by Trip ID, Vehicle ID or Driver ID"
+          label="Search Trips"
+          placeholder="Trip ID, Vehicle ID or Driver ID"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           size="small"
-          sx={{ mb: 2, width: 350 }}
+          sx={{
+            width: { xs: "100%", sm: 350 },
+            backgroundColor: "primary.main",
+            borderRadius: 2,
+          }}
         />
 
-        <FormControl size="small" sx={{ width: 180, ml: 2 }}>
+        <FormControl
+          size="small"
+          sx={{
+            width: { xs: "100%", sm: 180 },
+            backgroundColor: "primary.main",
+            borderRadius: 2,
+          }}
+        >
           <InputLabel>Status</InputLabel>
 
           <Select
@@ -143,11 +156,28 @@ const Trips = () => {
             onChange={(e) => setStatusFilter(e.target.value)}
           >
             <MenuItem value="all">All Status</MenuItem>
-            <MenuItem value="in_progress">Active</MenuItem>
+            <MenuItem value="active">Active</MenuItem>
             <MenuItem value="completed">Completed</MenuItem>
             <MenuItem value="cancelled">Cancelled</MenuItem>
           </Select>
         </FormControl>
+
+        {/* clear filter */}
+        <Button
+          variant="outlined"
+          size="small"
+          onClick={() => {
+            setSearch("");
+            setStatusFilter("all");
+            setPage(1);
+          }}
+          sx={{
+            height: 40,
+            textTransform: "none",
+          }}
+        >
+          Clear Filters
+        </Button>
       </Box>
 
       {/* loading, error conditions */}
@@ -195,7 +225,7 @@ const Trips = () => {
                   <TableCell>Trips not found</TableCell>
                 </TableRow>
               ) : (
-                // filteredTrips.map((trip) => (
+                // filteredTrips.map((trip) => ( //without pagination filter
                 currentTrips.map((trip) => (
                   <TableRow key={trip.id}>
                     <TableCell>{trip.id}</TableCell>
@@ -234,7 +264,6 @@ const Trips = () => {
       )}
 
       {/* pagination 10 trips / page */}
-
       {filteredTrips.length > tripsPerPage && (
         <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
           <Pagination
