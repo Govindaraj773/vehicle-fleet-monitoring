@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import Vehicles from "./pages/Vehicles";
 import VehicleDetails from "./pages/VehicleDetails";
 import Alerts from "./pages/Alerts";
+import Trips from "./pages/Trips";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -30,6 +31,7 @@ function App() {
           <Route path="/vehicles" element={<Vehicles />} />
           <Route path="/vehicles/:id" element={<VehicleDetails />} />{" "}
           <Route path="/alerts" element={<Alerts />} />
+          <Route path="/trips" element={<Trips />} />
         </Routes>
       ) : (
         <Login onLogin={handleLogin} />
