@@ -80,6 +80,29 @@ const TripDetails = () => {
           <Typography variant="body1">
             Driver ID: {trip?.driver_id || "Not Assigned"}
           </Typography>
+          <Typography variant="body1">
+            Start Latitude: {trip?.start_latitude}
+          </Typography>
+          <Typography variant="body1">
+            Start Longitude: {trip?.start_longitude}
+          </Typography>
+          <Typography variant="body1">
+            End Latitude: {trip?.end_latitude}
+          </Typography>
+          <Typography variant="body1">
+            End Longitude: {trip?.end_longitude}
+          </Typography>
+          <Typography variant="body1">
+            Start Time: {trip?.start_time}
+          </Typography>
+
+          <Typography variant="body1">End Time: {trip?.end_time}</Typography>
+          <Typography variant="body1">
+            Distance: {trip?.distance_km} km
+          </Typography>
+          <Typography variant="body1">
+            Distance: {trip?.distance_km} km
+          </Typography>
         </Box>
       </Box>
     </Box>
