@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Box, Button, Card, Chip, Grid, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  CircularProgress,
+  Chip,
+  Grid,
+  Typography,
+} from "@mui/material";
 
 const formatDateTime = (dateTime) => {
   if (!dateTime) return "Not Available";
@@ -103,7 +111,14 @@ const TripDetails = () => {
               },
             }}
           >
-            {loading ? "Refreshing..." : "Refresh"}
+            {loading ? (
+              <>
+                <CircularProgress size={16} sx={{ mr: 1 }} />
+                Refreshing...
+              </>
+            ) : (
+              "Refresh"
+            )}
           </Button>
         </Box>
         <Typography variant="h5" fontWeight={600}>
