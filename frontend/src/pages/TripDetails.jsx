@@ -21,31 +21,33 @@ const TripDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    const fetchTrip = async () => {
-      try {
-        setLoading(true);
-        setError("");
-        const token = localStorage.getItem("token");
-        const response = await fetch(`http://localhost:5000/api/trips/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const data = await response.json();
-        console.log("Trip Response:", data);
+  // fetching data
+  const fetchTrip = async () => {
+    try {
+      setLoading(true);
+      setError("");
+      const token = localStorage.getItem("token");
+      const response = await fetch(`http://localhost:5000/api/trips/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      console.log("Trip Response:", data);
 
-        if (!response.ok) {
-          throw new Error(data.message || "Failed to fetch trip");
-        }
-        setTrip(data.trip?.[0] || null);
-      } catch (error) {
-        console.error("Failed to Fetch Trip", error);
-        setError(error.message || "Something went wrong");
-      } finally {
-        setLoading(false);
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to fetch trip");
       }
-    };
+      setTrip(data.trip?.[0] || null);
+    } catch (error) {
+      console.error("Failed to Fetch Trip", error);
+      setError(error.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchTrip();
   }, [id]);
 
@@ -69,33 +71,46 @@ const TripDetails = () => {
           mb: 3,
         }}
       >
-        <Button
-          variant="outlined"
-          onClick={() => navigate("/trips")}
-          sx={{
-            textTransform: "none",
-            color: "#1976d2",
-            borderColor: "#90caf9",
-            backgroundColor: "#e3f2fd",
-            "&:hover": {
-              backgroundColor: "#bbdefb",
-              borderColor: "#64b5f6",
-            },
-          }}
-        >
-          Back to Trips
-        </Button>
+        <Box sx={{ display: "flex", gap: 1 }}>
+          <Button
+            variant="outlined"
+            onClick={() => navigate("/trips")}
+            sx={{
+              textTransform: "none",
+              color: "#1976d2",
+              borderColor: "#90caf9",
+              backgroundColor: "#e3f2fd",
+              "&:hover": {
+                backgroundColor: "#bbdefb",
+                borderColor: "#64b5f6",
+              },
+            }}
+          >
+            Back to Trips
+          </Button>
+          <Button
+            variant="outlined"
+            onClick={fetchTrip}
+            disabled={loading}
+            sx={{
+              textTransform: "none",
+              color: "#1976d2",
+              borderColor: "#90caf9",
+              backgroundColor: "#e3f2fd",
+              "&:hover": {
+                backgroundColor: "#bbdefb",
+                borderColor: "#64b5f6",
+              },
+            }}
+          >
+            {loading ? "Refreshing..." : "Refresh"}
+          </Button>
+        </Box>
         <Typography variant="h5" fontWeight={600}>
           Trip Details
         </Typography>
       </Box>
       <Box>
-        {/* <Typography variant="body1">Trip ID: {trip?.id}</Typography>
-
-        <Typography variant="body1">Vehicle ID: {trip?.vehicle_id}</Typography>
-        <Typography variant="body1">
-          Driver ID: {trip?.driver_id || "Not Assigned"}
-        </Typography> */}
         <Card sx={{ p: 2, mb: 3 }}>
           <Typography variant="h6" fontWeight={600} mb={2}>
             Basic Information
@@ -130,19 +145,6 @@ const TripDetails = () => {
             </Grid>
           </Grid>
         </Card>
-
-        {/* <Typography variant="body1">
-          Start Latitude: {trip?.start_latitude}
-        </Typography>
-        <Typography variant="body1">
-          Start Longitude: {trip?.start_longitude}
-        </Typography>
-        <Typography variant="body1">
-          End Latitude: {trip?.end_latitude}
-        </Typography>
-        <Typography variant="body1">
-          End Longitude: {trip?.end_longitude}
-        </Typography> */}
 
         <Card sx={{ p: 2, mb: 3 }}>
           <Typography variant="h6" fontWeight={600} mb={2}>
@@ -187,9 +189,7 @@ const TripDetails = () => {
             </Grid>
           </Grid>
         </Card>
-        {/* <Typography variant="body1">Start Time: {trip?.start_time}</Typography>
 
-        <Typography variant="body1">End Time: {trip?.end_time}</Typography> */}
         <Card sx={{ p: 2, mb: 3 }}>
           <Typography variant="h6" fontWeight={600} mb={2}>
             Trip Timing
