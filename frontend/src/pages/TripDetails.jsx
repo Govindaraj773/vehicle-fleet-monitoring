@@ -7,10 +7,14 @@ const TripDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [trip, setTrip] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchTrip = async () => {
       try {
+        setLoading(true);
+        setError("");
         const token = localStorage.getItem("token");
         const response = await fetch(`http://localhost:5000/api/trips/${id}`, {
           headers: {
@@ -25,11 +29,25 @@ const TripDetails = () => {
         }
         setTrip(data.trip?.[0] || null);
       } catch (error) {
-        console.error("Trip Response Error", error);
+        console.error("Failed to Fetch Trip", error);
+        setError(error.message || "Something went wrong");
+      } finally {
+        setLoading(false);
       }
     };
     fetchTrip();
   }, [id]);
+
+  // loading and error code
+  if (loading) {
+    return <Typography sx={{ p: 3 }}>Loading trip details...</Typography>;
+  }
+  if (error) {
+    return <Typography sx={{ p: 3 }}>{error}</Typography>;
+  }
+  if (!trip) {
+    return <Typography sx={{ p: 3 }}>Trip not found!</Typography>;
+  }
   return (
     <Box sx={{ p: 3 }}>
       <Box
@@ -41,6 +59,15 @@ const TripDetails = () => {
         }}
       >
         <Box>
+          <Button
+            variant="outlined"
+            onClick={() => navigate("/trips")}
+            sx={{
+              textTransform: "none",
+            }}
+          >
+            Back to Trips
+          </Button>
           <Typography variant="h5" fontWeight={600}>
             Trip Details
           </Typography>
@@ -50,17 +77,10 @@ const TripDetails = () => {
           <Typography variant="body1">
             Vehicle ID: {trip?.vehicle_id}
           </Typography>
+          <Typography variant="body1">
+            Driver ID: {trip?.driver_id || "Not Assigned"}
+          </Typography>
         </Box>
-
-        <Button
-          variant="outlined"
-          onClick={() => navigate("/trips")}
-          sx={{
-            textTransform: "none",
-          }}
-        >
-          Back to Trips
-        </Button>
       </Box>
     </Box>
   );
