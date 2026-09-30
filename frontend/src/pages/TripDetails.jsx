@@ -1,7 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-
 import { Box, Button, Card, Grid, Typography } from "@mui/material";
+
+const formatDateTime = (dateTime) => {
+  if (!dateTime) return "Not Available";
+
+  return new Date(dateTime).toLocaleString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
 
 const TripDetails = () => {
   const navigate = useNavigate();
@@ -183,7 +194,7 @@ const TripDetails = () => {
                 Start Time
               </Typography>
               <Typography variant="body1" fontWeight={500}>
-                {trip?.start_time}
+                {formatDateTime(trip?.start_time)}
               </Typography>
             </Grid>
 
@@ -192,7 +203,7 @@ const TripDetails = () => {
                 End Time
               </Typography>
               <Typography variant="body1" fontWeight={500}>
-                {trip?.end_time}
+                {formatDateTime(trip?.end_time)}
               </Typography>
             </Grid>
           </Grid>
