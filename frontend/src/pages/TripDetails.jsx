@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Box, Button, Card, Grid, Typography } from "@mui/material";
+import { Box, Button, Card, Chip, Grid, Typography } from "@mui/material";
 
 const formatDateTime = (dateTime) => {
   if (!dateTime) return "Not Available";
@@ -74,6 +74,13 @@ const TripDetails = () => {
           onClick={() => navigate("/trips")}
           sx={{
             textTransform: "none",
+            color: "#1976d2",
+            borderColor: "#90caf9",
+            backgroundColor: "#e3f2fd",
+            "&:hover": {
+              backgroundColor: "#bbdefb",
+              borderColor: "#64b5f6",
+            },
           }}
         >
           Back to Trips
@@ -227,9 +234,24 @@ const TripDetails = () => {
               <Typography variant="body2" color="text.secondary">
                 Status
               </Typography>
-              <Typography variant="body1" fontWeight={500}>
-                {trip?.status}
-              </Typography>
+              {/* <Chip
+                label={trip?.status || "Unknown"}
+                size="small"
+                variant="outlined"
+              /> */}
+              <Chip
+                label={trip?.status || "Unknown"}
+                size="small"
+                color={
+                  trip?.status === "active"
+                    ? "primary"
+                    : trip?.status === "completed"
+                      ? "success"
+                      : trip?.status === "cancelled"
+                        ? "error"
+                        : "default"
+                }
+              />
             </Grid>
           </Grid>
         </Card>
