@@ -70,7 +70,7 @@ const TripDetails = () => {
     return <Typography sx={{ p: 3 }}>Trip not found!</Typography>;
   }
   return (
-    <Box sx={{ p: 3 }}>
+    <Box sx={{ mb: 3 }}>
       <Box
         sx={{
           display: "flex",
@@ -79,181 +79,319 @@ const TripDetails = () => {
           mb: 3,
         }}
       >
-        <Box sx={{ display: "flex", gap: 1 }}>
-          <Button
-            variant="outlined"
-            onClick={() => navigate("/trips")}
-            sx={{
-              textTransform: "none",
-              color: "#1976d2",
-              borderColor: "#90caf9",
-              backgroundColor: "#e3f2fd",
-              "&:hover": {
-                backgroundColor: "#bbdefb",
-                borderColor: "#64b5f6",
-              },
-            }}
-          >
-            Back to Trips
-          </Button>
-          <Button
-            variant="outlined"
-            onClick={fetchTrip}
-            disabled={loading}
-            sx={{
-              textTransform: "none",
-              color: "#1976d2",
-              borderColor: "#90caf9",
-              backgroundColor: "#e3f2fd",
-              "&:hover": {
-                backgroundColor: "#bbdefb",
-                borderColor: "#64b5f6",
-              },
-            }}
-          >
-            {loading ? (
-              <>
-                <CircularProgress size={16} sx={{ mr: 1 }} />
-                Refreshing...
-              </>
-            ) : (
-              "Refresh"
-            )}
-          </Button>
-        </Box>
-        <Typography variant="h5" fontWeight={600}>
-          Trip Details
-        </Typography>
-      </Box>
-      <Box>
-        <Card sx={{ p: 2, mb: 3 }}>
-          <Typography variant="h6" fontWeight={600} mb={2}>
-            Basic Information
-          </Typography>
+        {/* Back to trips */}
+        <Button
+          variant="outlined"
+          onClick={() => navigate("/trips")}
+          sx={{
+            textTransform: "none",
+            color: "#1976d2",
+            borderColor: "#90caf9",
+            backgroundColor: "#e3f2fd",
+            "&:hover": {
+              backgroundColor: "#bbdefb",
+              borderColor: "#64b5f6",
+            },
+          }}
+        >
+          Back to Trips
+        </Button>
 
-          <Grid container spacing={2}>
-            <Grid size={{ xs: 12, sm: 4 }}>
-              <Typography variant="body2" color="text.secondary">
+        <Typography
+          variant="h6"
+          fontWeight={600}
+          mb={1.5}
+          color="text.secondary"
+          backgroundColor="#e3f2fd"
+          sx={{
+            mt: 0.5,
+            backgroundColor: "#e3f2fd",
+            color: "black",
+            borderRadius: 2,
+          }}
+        >
+          View complete information for Trip :{trip?.id}
+        </Typography>
+
+        {/* Refresh button */}
+        <Button
+          variant="outlined"
+          onClick={fetchTrip}
+          disabled={loading}
+          sx={{
+            textTransform: "none",
+            color: "#1976d2",
+            borderColor: "#90caf9",
+            backgroundColor: "#e3f2fd",
+            "&:hover": {
+              backgroundColor: "#bbdefb",
+              borderColor: "#64b5f6",
+            },
+          }}
+        >
+          {loading ? (
+            <>
+              <CircularProgress size={16} sx={{ mr: 1 }} />
+              Refreshing...
+            </>
+          ) : (
+            "Refresh"
+          )}
+        </Button>
+      </Box>
+      {/* Basic data */}
+      <Card
+        sx={{
+          p: 1.5,
+          mb: 1.5,
+          border: "1px solid #e0e0e0",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
+        }}
+      >
+        <Typography variant="h6" fontWeight={600} mb={1.5}>
+          Basic Information
+        </Typography>
+
+        <Grid container spacing={1.5}>
+          <Grid size={{ xs: 12, sm: 4 }}>
+            <Box
+              sx={{
+                p: 1.2,
+                borderRadius: 1,
+                backgroundColor: "#f8f9fa",
+              }}
+            >
+              <Typography
+                variant="body2"
+                fontWeight={900}
+                color="text.secondary"
+              >
                 Trip ID
               </Typography>
-              <Typography variant="body1" fontWeight={500}>
+              <Typography variant="body1" fontWeight={600} sx={{ mt: 0.3 }}>
                 {trip?.id}
               </Typography>
-            </Grid>
+            </Box>
+          </Grid>
 
-            <Grid size={{ xs: 12, sm: 4 }}>
-              <Typography variant="body2" color="text.secondary">
+          <Grid size={{ xs: 12, sm: 4 }}>
+            <Box
+              sx={{
+                p: 1.2,
+                borderRadius: 1,
+                backgroundColor: "#e3f2fd",
+              }}
+            >
+              <Typography variant="body2" fontWeight={600} color="#1565c0">
                 Vehicle ID
               </Typography>
-              <Typography variant="body1" fontWeight={500}>
+              <Typography variant="body1" fontWeight={600} sx={{ mt: 0.3 }}>
                 {trip?.vehicle_id}
               </Typography>
-            </Grid>
+            </Box>
+          </Grid>
 
-            <Grid size={{ xs: 12, sm: 4 }}>
-              <Typography variant="body2" color="text.secondary">
+          <Grid size={{ xs: 12, sm: 4 }}>
+            <Box
+              sx={{
+                p: 1.2,
+                borderRadius: 1,
+                backgroundColor: "#f3e5f5",
+              }}
+            >
+              <Typography variant="body2" fontWeight="bold" color="#7b1fa2">
                 Driver ID
               </Typography>
-              <Typography variant="body1" fontWeight={500}>
+              <Typography variant="body1" fontWeight={600} sx={{ mt: 0.3 }}>
                 {trip?.driver_id || "Not Assigned"}
               </Typography>
-            </Grid>
+            </Box>
           </Grid>
-        </Card>
+        </Grid>
+      </Card>
 
-        <Card sx={{ p: 2, mb: 3 }}>
-          <Typography variant="h6" fontWeight={600} mb={2}>
-            Location Information
-          </Typography>
+      {/* Location  */}
+      <Card
+        sx={{
+          p: 1.5,
+          mb: 1.5,
+          border: "1px solid #e0e0e0",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
+        }}
+      >
+        <Typography variant="h6" fontWeight={600} mb={1.5}>
+          Location Information
+        </Typography>
 
-          <Grid container spacing={2}>
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <Typography variant="body2" color="text.secondary">
+        <Grid container spacing={1.5}>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <Box
+              sx={{
+                p: 1.2,
+                borderRadius: 1,
+                backgroundColor: "#e8f5e9",
+              }}
+            >
+              <Typography variant="body2" fontWeight={600} color="#2e7d32">
                 Start Latitude
               </Typography>
-              <Typography variant="body1" fontWeight={500}>
+              <Typography variant="body1" fontWeight={600} sx={{ mt: 0.3 }}>
                 {trip?.start_latitude}
               </Typography>
-            </Grid>
+            </Box>
+          </Grid>
 
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <Typography variant="body2" color="text.secondary">
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <Box
+              sx={{
+                p: 1.2,
+                borderRadius: 1,
+                backgroundColor: "#fff3e0",
+              }}
+            >
+              <Typography variant="body2" fontWeight={600} color="#ef6c00">
                 Start Longitude
               </Typography>
-              <Typography variant="body1" fontWeight={500}>
+              <Typography variant="body1" fontWeight={600} sx={{ mt: 0.3 }}>
                 {trip?.start_longitude}
               </Typography>
-            </Grid>
+            </Box>
+          </Grid>
 
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <Typography variant="body2" color="text.secondary">
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <Box
+              sx={{
+                p: 1.2,
+                borderRadius: 1,
+                backgroundColor: "#e8f5e9",
+              }}
+            >
+              <Typography variant="body2" fontWeight={600} color="#2e7d32">
                 End Latitude
               </Typography>
-              <Typography variant="body1" fontWeight={500}>
+              <Typography variant="body1" fontWeight={600} sx={{ mt: 0.3 }}>
                 {trip?.end_latitude}
               </Typography>
-            </Grid>
+            </Box>
+          </Grid>
 
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <Typography variant="body2" color="text.secondary">
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <Box
+              sx={{
+                p: 1.2,
+                borderRadius: 1,
+                backgroundColor: "#fff3e0",
+              }}
+            >
+              <Typography variant="body2" fontWeight={600} color="#ef6c00">
                 End Longitude
               </Typography>
-              <Typography variant="body1" fontWeight={500}>
+              <Typography variant="body1" fontWeight={600} sx={{ mt: 0.3 }}>
                 {trip?.end_longitude}
               </Typography>
-            </Grid>
+            </Box>
           </Grid>
-        </Card>
+        </Grid>
+      </Card>
 
-        <Card sx={{ p: 2, mb: 3 }}>
-          <Typography variant="h6" fontWeight={600} mb={2}>
-            Trip Timing
-          </Typography>
+      {/* Timing */}
+      <Card
+        sx={{
+          p: 1.5,
+          mb: 1.5,
+          border: "1px solid #e0e0e0",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
+        }}
+      >
+        <Typography variant="h6" fontWeight={600} mb={1.5}>
+          Trip Timing
+        </Typography>
 
-          <Grid container spacing={2}>
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <Typography variant="body2" color="text.secondary">
+        <Grid container spacing={1.5}>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <Box
+              sx={{
+                p: 1.2,
+                borderRadius: 1,
+                backgroundColor: "#e3f2fd",
+              }}
+            >
+              <Typography variant="body2" fontWeight={600} color="#1565c0">
                 Start Time
               </Typography>
-              <Typography variant="body1" fontWeight={500}>
+              <Typography variant="body1" fontWeight={600} sx={{ mt: 0.3 }}>
                 {formatDateTime(trip?.start_time)}
               </Typography>
-            </Grid>
+            </Box>
+          </Grid>
 
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <Typography variant="body2" color="text.secondary">
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <Box
+              sx={{
+                p: 1.2,
+                borderRadius: 1,
+                backgroundColor: "#fce4ec",
+              }}
+            >
+              <Typography variant="body2" fontWeight={600} color="#c2185b">
                 End Time
               </Typography>
-              <Typography variant="body1" fontWeight={500}>
+              <Typography variant="body1" fontWeight={600} sx={{ mt: 0.3 }}>
                 {formatDateTime(trip?.end_time)}
               </Typography>
-            </Grid>
+            </Box>
           </Grid>
-        </Card>
-        <Card sx={{ p: 2, mb: 3 }}>
-          <Typography variant="h6" fontWeight={600} mb={2}>
-            Trip Summary
-          </Typography>
+        </Grid>
+      </Card>
 
-          <Grid container spacing={2}>
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <Typography variant="body2" color="text.secondary">
+      {/* Summary */}
+      <Card
+        sx={{
+          p: 1.5,
+          mb: 1,
+          border: "1px solid #e0e0e0",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
+        }}
+      >
+        <Typography variant="h6" fontWeight={600} mb={1.5}>
+          Trip Summary
+        </Typography>
+
+        <Grid container spacing={1.5}>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <Box
+              sx={{
+                p: 1.2,
+                borderRadius: 1,
+                backgroundColor: "#fff8e1",
+              }}
+            >
+              <Typography variant="body2" fontWeight={600} color="#f57f17">
                 Distance
               </Typography>
-              <Typography variant="body1" fontWeight={500}>
+              <Typography variant="body1" fontWeight={600} sx={{ mt: 0.3 }}>
                 {trip?.distance_km} km
               </Typography>
-            </Grid>
+            </Box>
+          </Grid>
 
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <Typography variant="body2" color="text.secondary">
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <Box
+              sx={{
+                p: 1.2,
+                borderRadius: 1,
+                backgroundColor: "#f5f5f5",
+              }}
+            >
+              <Typography
+                variant="body2"
+                fontWeight={600}
+                color="text.secondary"
+                mb={0.5}
+              >
                 Status
               </Typography>
-              {/* <Chip
-                label={trip?.status || "Unknown"}
-                size="small"
-                variant="outlined"
-              /> */}
+
               <Chip
                 label={trip?.status || "Unknown"}
                 size="small"
@@ -267,10 +405,10 @@ const TripDetails = () => {
                         : "default"
                 }
               />
-            </Grid>
+            </Box>
           </Grid>
-        </Card>
-      </Box>
+        </Grid>
+      </Card>
     </Box>
   );
 };
