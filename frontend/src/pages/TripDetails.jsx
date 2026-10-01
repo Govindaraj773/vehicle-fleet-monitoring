@@ -69,6 +69,18 @@ const TripDetails = () => {
   if (!trip) {
     return <Typography sx={{ p: 3 }}>Trip not found!</Typography>;
   }
+
+  // View on location map
+  const openLocationMap = (lat, lng) => {
+    if (lat == null || lng == null) return;
+
+    window.open(
+      `https://www.google.com/maps?q=${lat},${lng}`,
+      "_blank",
+      "noopener,noreferrer",
+    );
+  };
+
   return (
     <Box sx={{ mb: 3 }}>
       <Box
@@ -246,23 +258,6 @@ const TripDetails = () => {
               sx={{
                 p: 1.2,
                 borderRadius: 1,
-                backgroundColor: "#fff3e0",
-              }}
-            >
-              <Typography variant="body2" fontWeight={600} color="#ef6c00">
-                Start Longitude
-              </Typography>
-              <Typography variant="body1" fontWeight={600} sx={{ mt: 0.3 }}>
-                {trip?.start_longitude}
-              </Typography>
-            </Box>
-          </Grid>
-
-          <Grid size={{ xs: 12, sm: 6 }}>
-            <Box
-              sx={{
-                p: 1.2,
-                borderRadius: 1,
                 backgroundColor: "#e8f5e9",
               }}
             >
@@ -284,11 +279,89 @@ const TripDetails = () => {
               }}
             >
               <Typography variant="body2" fontWeight={600} color="#ef6c00">
+                Start Longitude
+              </Typography>
+              <Typography variant="body1" fontWeight={600} sx={{ mt: 0.3 }}>
+                {trip?.start_longitude}
+              </Typography>
+            </Box>
+          </Grid>
+
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <Box
+              sx={{
+                p: 1.2,
+                borderRadius: 1,
+                backgroundColor: "#fff3e0",
+              }}
+            >
+              <Typography variant="body2" fontWeight={600} color="#ef6c00">
                 End Longitude
               </Typography>
               <Typography variant="body1" fontWeight={600} sx={{ mt: 0.3 }}>
                 {trip?.end_longitude}
               </Typography>
+            </Box>
+          </Grid>
+
+          {/* live map location */}
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <Box
+              sx={{
+                p: 1.2,
+                borderRadius: 1,
+                backgroundColor: "#e8f5e9",
+              }}
+            >
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={() =>
+                  openLocationMap(trip?.start_latitude, trip?.start_longitude)
+                }
+                sx={{
+                  textTransform: "none",
+                  color: "#2e7d32",
+                  borderColor: "#81c784",
+                  backgroundColor: "#fff",
+                  "&:hover": {
+                    backgroundColor: "#f1f8e9",
+                    borderColor: "#4caf50",
+                  },
+                }}
+              >
+                View Start on Map
+              </Button>
+            </Box>
+          </Grid>
+
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <Box
+              sx={{
+                p: 1.2,
+                borderRadius: 1,
+                backgroundColor: "#e8f5e9",
+              }}
+            >
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={() =>
+                  openLocationMap(trip?.end_latitude, trip?.end_longitude)
+                }
+                sx={{
+                  textTransform: "none",
+                  color: "#ef6c00",
+                  borderColor: "#ffb74d",
+                  backgroundColor: "#fff",
+                  "&:hover": {
+                    backgroundColor: "#fff8e1",
+                    borderColor: "#fb8c00",
+                  },
+                }}
+              >
+                View End on Map
+              </Button>
             </Box>
           </Grid>
         </Grid>
