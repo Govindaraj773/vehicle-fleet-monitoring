@@ -107,6 +107,7 @@ function Dashboard() {
       <Button onClick={() => navigate("/vehicles")}>View All Vehicles</Button>
       <Button onClick={() => navigate("/alerts")}>View All Alerts</Button>
       <Button onClick={() => navigate("/trips")}>View All Trips</Button>
+      <Button onClick={() => navigate("/drivers")}>View All Drivers</Button>
     </div>
   );
 }
