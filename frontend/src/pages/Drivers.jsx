@@ -12,11 +12,16 @@ import {
   Chip,
   Button,
   TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 
 const Drivers = () => {
   const [drivers, setDrivers] = useState([]);
   const [searchDriver, setSearchDriver] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
 
   useEffect(() => {
     const fetchDrivers = async () => {
@@ -37,19 +42,31 @@ const Drivers = () => {
     fetchDrivers();
   }, []);
 
-  //   search functionality
+  //   Status functionality
+  const statusOptions = [
+    "active",
+    "not active",
+    "busy",
+    "available",
+    "not available",
+  ];
+
+  //   Search functionality
   const filteredDrivers = drivers.filter((driver) => {
     const search = searchDriver.trim().toLowerCase();
 
     const name = String(driver.name || "").toLowerCase();
     const phone = String(driver.phone || "").toLowerCase();
     const licenseNumber = String(driver.license_number || "").toLowerCase();
-
-    return (
+    const matchesSearch =
       name.includes(search) ||
       phone.includes(search) ||
-      licenseNumber.includes(search)
-    );
+      licenseNumber.includes(search);
+
+    const matchesStatus =
+      statusFilter === "all" || driver.status === statusFilter;
+
+    return matchesSearch && matchesStatus;
   });
 
   return (
@@ -83,15 +100,44 @@ const Drivers = () => {
         </Typography>
       </Box>
 
-      {/* search bar */}
-      <TextField
-        Width="40%"
-        size="small"
-        placeholder="Search Drivers..."
-        value={searchDriver}
-        onChange={(e) => setSearchDriver(e.target.value)}
-        sx={{ mb: 2 }}
-      />
+      {/* search bar & status filter */}
+      <Box
+        sx={{
+          display: "flex",
+          gap: 2,
+          mb: 2,
+        }}
+      >
+        <TextField
+          fullWidth
+          size="small"
+          placeholder="Search drivers..."
+          value={searchDriver}
+          onChange={(e) => setSearchDriver(e.target.value)}
+        />
+
+        <FormControl size="small" sx={{ minWidth: 160 }}>
+          <InputLabel>Status</InputLabel>
+
+          <Select
+            value={statusFilter}
+            label="Status"
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <MenuItem value="all">All</MenuItem>
+
+            {statusOptions.map((status) => (
+              <MenuItem
+                key={status}
+                value={status}
+                sx={{ textTransform: "capitalize" }}
+              >
+                {status}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Box>
 
       {/* Drivers table */}
       <TableContainer
