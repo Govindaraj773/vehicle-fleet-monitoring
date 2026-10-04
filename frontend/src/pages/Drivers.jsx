@@ -16,12 +16,16 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Pagination,
 } from "@mui/material";
 
 const Drivers = () => {
   const [drivers, setDrivers] = useState([]);
   const [searchDriver, setSearchDriver] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [page, setPage] = useState(1);
+
+  const driversPerPage = 10;
 
   useEffect(() => {
     const fetchDrivers = async () => {
@@ -68,6 +72,19 @@ const Drivers = () => {
 
     return matchesSearch && matchesStatus;
   });
+
+  // Pagination functionality
+  const startIndex = (page - 1) * driversPerPage;
+  const endIndex = startIndex + driversPerPage;
+  const paginatedDrivers = filteredDrivers.slice(startIndex, endIndex);
+
+  useEffect(
+    () => {
+      setPage(1);
+    },
+    [searchDriver],
+    [statusFilter],
+  );
 
   return (
     <Box
@@ -174,7 +191,7 @@ const Drivers = () => {
           {/* Table body */}
           <TableBody>
             {/* {drivers.map((driver) => ( */}
-            {filteredDrivers.map((driver) => (
+            {paginatedDrivers.map((driver) => (
               <TableRow
                 key={driver.id}
                 hover
@@ -225,6 +242,19 @@ const Drivers = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          mt: 2,
+        }}
+      >
+        <Pagination
+          count={Math.ceil(filteredDrivers.length / driversPerPage)}
+          page={page}
+          onChange={(event, value) => setPage(value)}
+        />
+      </Box>
     </Box>
   );
 };
