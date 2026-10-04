@@ -11,10 +11,13 @@ import {
   TableRow,
   Chip,
   Button,
+  TextField,
 } from "@mui/material";
 
 const Drivers = () => {
   const [drivers, setDrivers] = useState([]);
+  const [searchDriver, setSearchDriver] = useState("");
+
   useEffect(() => {
     const fetchDrivers = async () => {
       try {
@@ -33,6 +36,22 @@ const Drivers = () => {
     };
     fetchDrivers();
   }, []);
+
+  //   search functionality
+  const filteredDrivers = drivers.filter((driver) => {
+    const search = searchDriver.trim().toLowerCase();
+
+    const name = String(driver.name || "").toLowerCase();
+    const phone = String(driver.phone || "").toLowerCase();
+    const licenseNumber = String(driver.license_number || "").toLowerCase();
+
+    return (
+      name.includes(search) ||
+      phone.includes(search) ||
+      licenseNumber.includes(search)
+    );
+  });
+
   return (
     <Box
       sx={{
@@ -63,6 +82,16 @@ const Drivers = () => {
           Manage and monitor your fleet drivers
         </Typography>
       </Box>
+
+      {/* search bar */}
+      <TextField
+        Width="40%"
+        size="small"
+        placeholder="Search Drivers..."
+        value={searchDriver}
+        onChange={(e) => setSearchDriver(e.target.value)}
+        sx={{ mb: 2 }}
+      />
 
       {/* Drivers table */}
       <TableContainer
@@ -98,7 +127,8 @@ const Drivers = () => {
 
           {/* Table body */}
           <TableBody>
-            {drivers.map((driver) => (
+            {/* {drivers.map((driver) => ( */}
+            {filteredDrivers.map((driver) => (
               <TableRow
                 key={driver.id}
                 hover
