@@ -18,36 +18,44 @@ import {
   MenuItem,
   Pagination,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import RefreshIcon from "@mui/icons-material/Refresh";
 
 const Drivers = () => {
+  const navigate = useNavigate();
   const [drivers, setDrivers] = useState([]);
   const [searchDriver, setSearchDriver] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [refresh, setRefresh] = useState(false);
 
   const driversPerPage = 10;
 
+  const fetchDrivers = async () => {
+    try {
+      setRefresh(true);
+      setError("");
+      const token = localStorage.getItem("token");
+      const response = await fetch("http://localhost:5000/api/drivers", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      console.log("Fetched API drivers:", data);
+      setDrivers(data.drivers || []);
+    } catch (error) {
+      console.error("Error fetching drivers:", error);
+      setError("Failed to fetch drivers. Please try again later.");
+    } finally {
+      setLoading(false);
+      setRefresh(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchDrivers = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch("http://localhost:5000/api/drivers", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const data = await response.json();
-        console.log("Fetched API drivers:", data);
-        setDrivers(data.drivers || []);
-      } catch (error) {
-        console.error("Error fetching drivers:", error);
-        setError("Failed to fetch drivers. Please try again later.");
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchDrivers();
   }, []);
 
@@ -100,7 +108,30 @@ const Drivers = () => {
       }}
     >
       {/* Header */}
-      <Box sx={{ mb: 3 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 3,
+        }}
+      >
+        <Button
+          variant="outlined"
+          onClick={() => navigate("/")}
+          sx={{
+            textTransform: "none",
+            color: "#1976d2",
+            borderColor: "#90caf9",
+            backgroundColor: "#e3f2fd",
+            "&:hover": {
+              backgroundColor: "#bbdefb",
+              borderColor: "#64b5f6",
+            },
+          }}
+        >
+          Back to Home
+        </Button>
         <Typography
           variant="h5"
           sx={{
@@ -120,6 +151,17 @@ const Drivers = () => {
         >
           Manage and monitor your fleet drivers
         </Typography>
+        <Button
+          variant="outlined"
+          startIcon={<RefreshIcon />}
+          onClick={fetchDrivers}
+          disabled={refresh}
+          sx={{
+            textTransform: "none",
+          }}
+        >
+          {refresh ? "Refreshing..." : "Refresh"}
+        </Button>
       </Box>
 
       {/* search bar & status filter */}
