@@ -25,6 +25,7 @@ const Drivers = () => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const driversPerPage = 10;
 
@@ -42,6 +43,7 @@ const Drivers = () => {
         setDrivers(data.drivers || []);
       } catch (error) {
         console.error("Error fetching drivers:", error);
+        setError("Failed to fetch drivers. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -197,6 +199,12 @@ const Drivers = () => {
               <TableRow>
                 <TableCell colSpan={6} align="center">
                   Loading Drivers...
+                </TableCell>
+              </TableRow>
+            ) : error ? (
+              <TableRow>
+                <TableCell colSpan={6} align="center">
+                  {error}
                 </TableCell>
               </TableRow>
             ) : (
