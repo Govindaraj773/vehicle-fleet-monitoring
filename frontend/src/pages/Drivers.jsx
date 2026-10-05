@@ -24,6 +24,7 @@ const Drivers = () => {
   const [searchDriver, setSearchDriver] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(true);
 
   const driversPerPage = 10;
 
@@ -41,6 +42,8 @@ const Drivers = () => {
         setDrivers(data.drivers || []);
       } catch (error) {
         console.error("Error fetching drivers:", error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchDrivers();
@@ -190,55 +193,63 @@ const Drivers = () => {
 
           {/* Table body */}
           <TableBody>
-            {/* {drivers.map((driver) => ( */}
-            {paginatedDrivers.map((driver) => (
-              <TableRow
-                key={driver.id}
-                hover
-                sx={{
-                  "&:last-child td, &:last-child th": {
-                    border: 0,
-                  },
-                }}
-              >
-                <TableCell>{driver.id}</TableCell>
-
-                <TableCell sx={{ fontWeight: 500 }}>
-                  {driver.name || "-"}
-                </TableCell>
-
-                <TableCell>{driver.phone || "-"}</TableCell>
-
-                <TableCell>{driver.license_number || "-"}</TableCell>
-
-                <TableCell>
-                  <Chip
-                    label={driver.status || "Unknown"}
-                    size="small"
-                    sx={{
-                      textTransform: "capitalize",
-                      fontWeight: 500,
-                      backgroundColor:
-                        driver.status === "active" ? "#dcfce7" : "#f3f4f6",
-                      color: driver.status === "active" ? "#166534" : "#4b5563",
-                    }}
-                  />
-                </TableCell>
-
-                <TableCell>
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    sx={{
-                      textTransform: "none",
-                      minWidth: 60,
-                    }}
-                  >
-                    View
-                  </Button>
+            {loading ? (
+              <TableRow>
+                <TableCell colSpan={6} align="center">
+                  Loading Drivers...
                 </TableCell>
               </TableRow>
-            ))}
+            ) : (
+              paginatedDrivers.map((driver) => (
+                <TableRow
+                  key={driver.id}
+                  hover
+                  sx={{
+                    "&:last-child td, &:last-child th": {
+                      border: 0,
+                    },
+                  }}
+                >
+                  <TableCell>{driver.id}</TableCell>
+
+                  <TableCell sx={{ fontWeight: 500 }}>
+                    {driver.name || "-"}
+                  </TableCell>
+
+                  <TableCell>{driver.phone || "-"}</TableCell>
+
+                  <TableCell>{driver.license_number || "-"}</TableCell>
+
+                  <TableCell>
+                    <Chip
+                      label={driver.status || "Unknown"}
+                      size="small"
+                      sx={{
+                        textTransform: "capitalize",
+                        fontWeight: 500,
+                        backgroundColor:
+                          driver.status === "active" ? "#dcfce7" : "#f3f4f6",
+                        color:
+                          driver.status === "active" ? "#166534" : "#4b5563",
+                      }}
+                    />
+                  </TableCell>
+
+                  <TableCell>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      sx={{
+                        textTransform: "none",
+                        minWidth: 60,
+                      }}
+                    >
+                      View
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </TableContainer>
