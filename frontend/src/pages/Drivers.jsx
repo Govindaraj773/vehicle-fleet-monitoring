@@ -45,6 +45,7 @@ const Drivers = () => {
       });
       const data = await response.json();
       console.log("Fetched API drivers:", data);
+      console.table(data.drivers);
       setDrivers(data.drivers || []);
     } catch (error) {
       console.error("Error fetching drivers:", error);
@@ -149,7 +150,7 @@ const Drivers = () => {
             color: "#6b7280",
           }}
         >
-          Manage and monitor your fleet drivers
+          Manage and monitor fleet drivers
         </Typography>
         <Button
           variant="outlined"
@@ -299,6 +300,7 @@ const Drivers = () => {
                         textTransform: "none",
                         minWidth: 60,
                       }}
+                      onClick={() => navigate(`/drivers/${driver.id}`)}
                     >
                       View
                     </Button>
