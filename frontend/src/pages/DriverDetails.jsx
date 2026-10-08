@@ -10,32 +10,37 @@ import {
   TableBody,
   Table,
   TableContainer,
+  Button,
 } from "@mui/material";
-3;
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import RefreshIcon from "@mui/icons-material/Refresh";
 
 const DriverDetails = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
   const [driver, setDriver] = useState(null);
+  const [refresh, setRefresh] = useState(false);
+
+  const fetchDriverDetails = async () => {
+    try {
+      setRefresh(true);
+      const token = localStorage.getItem("token");
+      const response = await fetch(`http://localhost:5000/api/drivers/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      console.log("Fetched API Driver Details:", data);
+      setDriver(data.driver || null);
+    } catch (error) {
+      console.error("Error while fetching driver details:", error);
+    } finally {
+      setRefresh(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchDriverDetails = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(
-          `http://localhost:5000/api/drivers/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
-        const data = await response.json();
-        console.log("Fetched API Driver Details:", data);
-        setDriver(data.driver || null);
-      } catch (error) {
-        console.error("Error while fetching driver details:", error);
-      }
-    };
     fetchDriverDetails();
   }, [id]);
 
@@ -47,7 +52,56 @@ const DriverDetails = () => {
         backgroundColor: "#f8f9fa",
       }}
     >
-      {/* Driver Information */}
+      {/* Driver Details UI Header */}
+      <Box
+        sx={{
+          position: "relative",
+          mb: 3,
+          textAlign: "center",
+        }}
+      >
+        {/* Left Side Button */}
+        <Button
+          variant="outlined"
+          startIcon={<ArrowBackIcon />}
+          onClick={() => navigate("/drivers")}
+          sx={{
+            position: "absolute",
+            left: 0,
+            top: 0,
+            textTransform: "none",
+          }}
+        >
+          Back to Drivers
+        </Button>
+
+        <Typography
+          variant="h5"
+          sx={{
+            fontWeight: 600,
+            color: "#1f2937",
+          }}
+        >
+          Driver Details
+        </Typography>
+
+        <Button
+          variant="outlined"
+          startIcon={<RefreshIcon />}
+          onClick={fetchDriverDetails}
+          disabled={refresh}
+          sx={{
+            position: "absolute",
+            right: 0,
+            top: 0,
+            textTransform: "none",
+          }}
+        >
+          {refresh ? "Refreshing..." : "Refresh"}
+        </Button>
+      </Box>
+
+      {/* Driver Details Table */}
       <Paper
         elevation={0}
         sx={{
@@ -57,36 +111,6 @@ const DriverDetails = () => {
           backgroundColor: "#ffffff",
         }}
       >
-        {/* Driver Details UI Header */}
-        <Box
-          sx={{
-            px: { xs: 2, md: 2.5 },
-            py: 2,
-            borderBottom: "1px solid #e5e7eb",
-          }}
-        >
-          <Typography
-            variant="h6"
-            sx={{
-              fontWeight: 600,
-              color: "#1f2937",
-            }}
-          >
-            Driver Information
-          </Typography>
-
-          <Typography
-            variant="body2"
-            sx={{
-              color: "#6b7280",
-              mt: 0.5,
-            }}
-          >
-            Basic information and current driver status
-          </Typography>
-        </Box>
-
-        {/* Driver Details Table */}
         <TableContainer>
           <Table>
             <TableBody>
