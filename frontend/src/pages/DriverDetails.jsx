@@ -11,6 +11,7 @@ import {
   Table,
   TableContainer,
   Button,
+  CircularProgress,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import RefreshIcon from "@mui/icons-material/Refresh";
@@ -20,16 +21,20 @@ const DriverDetails = () => {
   const { id } = useParams();
   const [driver, setDriver] = useState(null);
   const [refresh, setRefresh] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const fetchDriverDetails = async () => {
     try {
       setRefresh(true);
+      setLoading(true);
       const token = localStorage.getItem("token");
       const response = await fetch(`http://localhost:5000/api/drivers/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+
+    
       const data = await response.json();
       console.log("Fetched API Driver Details:", data);
       setDriver(data.driver || null);
@@ -37,6 +42,7 @@ const DriverDetails = () => {
       console.error("Error while fetching driver details:", error);
     } finally {
       setRefresh(false);
+      setLoading(false);
     }
   };
 
@@ -52,187 +58,212 @@ const DriverDetails = () => {
         backgroundColor: "#f8f9fa",
       }}
     >
-      {/* Driver Details UI Header */}
-      <Box
-        sx={{
-          position: "relative",
-          mb: 3,
-          textAlign: "center",
-        }}
-      >
-        {/* Left Side Button */}
-        <Button
-          variant="outlined"
-          startIcon={<ArrowBackIcon />}
-          onClick={() => navigate("/drivers")}
+      {loading ? (
+        <Box
           sx={{
-            position: "absolute",
-            left: 0,
-            top: 0,
-            textTransform: "none",
+            minHeight: "70vh",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 2,
           }}
         >
-          Back to Drivers
-        </Button>
+          <CircularProgress size={32} />
 
-        <Typography
-          variant="h5"
-          sx={{
-            fontWeight: 600,
-            color: "#1f2937",
-          }}
-        >
-          Driver Details
-        </Typography>
+          <Typography
+            variant="body2"
+            sx={{
+              color: "#6b7280",
+            }}
+          >
+            Loading driver details...
+          </Typography>
+        </Box>
+      ) : (
+        <>
+          <Box
+            sx={{
+              position: "relative",
+              mb: 3,
+              textAlign: "center",
+            }}
+          >
+            {/* Left Side Button */}
+            <Button
+              variant="outlined"
+              startIcon={<ArrowBackIcon />}
+              onClick={() => navigate("/drivers")}
+              sx={{
+                position: "absolute",
+                left: 0,
+                top: 0,
+                textTransform: "none",
+              }}
+            >
+              Back to Drivers
+            </Button>
 
-        <Button
-          variant="outlined"
-          startIcon={<RefreshIcon />}
-          onClick={fetchDriverDetails}
-          disabled={refresh}
-          sx={{
-            position: "absolute",
-            right: 0,
-            top: 0,
-            textTransform: "none",
-          }}
-        >
-          {refresh ? "Refreshing..." : "Refresh"}
-        </Button>
-      </Box>
+            <Typography
+              variant="h5"
+              sx={{
+                fontWeight: 600,
+                color: "#1f2937",
+              }}
+            >
+              Driver Details
+            </Typography>
 
-      {/* Driver Details Table */}
-      <Paper
-        elevation={0}
-        sx={{
-          border: "1px solid #e5e7eb",
-          borderRadius: 2,
-          overflow: "hidden",
-          backgroundColor: "#ffffff",
-        }}
-      >
-        <TableContainer>
-          <Table>
-            <TableBody>
-              <TableRow>
-                <TableCell
-                  sx={{
-                    width: { xs: "40%", md: "50%" },
-                    fontWeight: 500,
-                    color: "#6b7280",
-                    borderBottom: "1px solid #f0f0f0",
-                  }}
-                >
-                  Driver ID
-                </TableCell>
+            <Button
+              variant="outlined"
+              startIcon={<RefreshIcon />}
+              onClick={fetchDriverDetails}
+              disabled={refresh}
+              sx={{
+                position: "absolute",
+                right: 0,
+                top: 0,
+                textTransform: "none",
+              }}
+            >
+              {refresh ? "Refreshing..." : "Refresh"}
+            </Button>
+          </Box>
 
-                <TableCell
-                  sx={{
-                    fontWeight: 600,
-                    color: "#1f2937",
-                    borderBottom: "1px solid #f0f0f0",
-                  }}
-                >
-                  {driver?.id || "-"}
-                </TableCell>
-              </TableRow>
+          {/* Driver Details Table */}
+          <Paper
+            elevation={0}
+            sx={{
+              border: "1px solid #e5e7eb",
+              borderRadius: 2,
+              overflow: "hidden",
+              backgroundColor: "#ffffff",
+            }}
+          >
+            <TableContainer>
+              <Table>
+                <TableBody>
+                  <TableRow>
+                    <TableCell
+                      sx={{
+                        width: { xs: "40%", md: "50%" },
+                        fontWeight: 500,
+                        color: "#6b7280",
+                        borderBottom: "1px solid #f0f0f0",
+                      }}
+                    >
+                      Driver ID
+                    </TableCell>
 
-              <TableRow>
-                <TableCell
-                  sx={{
-                    fontWeight: 500,
-                    color: "#6b7280",
-                    borderBottom: "1px solid #f0f0f0",
-                  }}
-                >
-                  Driver Name
-                </TableCell>
+                    <TableCell
+                      sx={{
+                        fontWeight: 600,
+                        color: "#1f2937",
+                        borderBottom: "1px solid #f0f0f0",
+                      }}
+                    >
+                      {driver?.id || "-"}
+                    </TableCell>
+                  </TableRow>
 
-                <TableCell
-                  sx={{
-                    fontWeight: 600,
-                    color: "#1f2937",
-                    borderBottom: "1px solid #f0f0f0",
-                  }}
-                >
-                  {driver?.name || "-"}
-                </TableCell>
-              </TableRow>
+                  <TableRow>
+                    <TableCell
+                      sx={{
+                        fontWeight: 500,
+                        color: "#6b7280",
+                        borderBottom: "1px solid #f0f0f0",
+                      }}
+                    >
+                      Driver Name
+                    </TableCell>
 
-              <TableRow>
-                <TableCell
-                  sx={{
-                    fontWeight: 500,
-                    color: "#6b7280",
-                    borderBottom: "1px solid #f0f0f0",
-                  }}
-                >
-                  Phone
-                </TableCell>
+                    <TableCell
+                      sx={{
+                        fontWeight: 600,
+                        color: "#1f2937",
+                        borderBottom: "1px solid #f0f0f0",
+                      }}
+                    >
+                      {driver?.name || "-"}
+                    </TableCell>
+                  </TableRow>
 
-                <TableCell
-                  sx={{
-                    fontWeight: 600,
-                    color: "#1f2937",
-                    borderBottom: "1px solid #f0f0f0",
-                  }}
-                >
-                  {driver?.phone || "-"}
-                </TableCell>
-              </TableRow>
+                  <TableRow>
+                    <TableCell
+                      sx={{
+                        fontWeight: 500,
+                        color: "#6b7280",
+                        borderBottom: "1px solid #f0f0f0",
+                      }}
+                    >
+                      Phone
+                    </TableCell>
 
-              <TableRow>
-                <TableCell
-                  sx={{
-                    fontWeight: 500,
-                    color: "#6b7280",
-                    borderBottom: "1px solid #f0f0f0",
-                  }}
-                >
-                  License Number
-                </TableCell>
+                    <TableCell
+                      sx={{
+                        fontWeight: 600,
+                        color: "#1f2937",
+                        borderBottom: "1px solid #f0f0f0",
+                      }}
+                    >
+                      {driver?.phone || "-"}
+                    </TableCell>
+                  </TableRow>
 
-                <TableCell
-                  sx={{
-                    fontWeight: 600,
-                    color: "#1f2937",
-                    borderBottom: "1px solid #f0f0f0",
-                  }}
-                >
-                  {driver?.license_number || "-"}
-                </TableCell>
-              </TableRow>
+                  <TableRow>
+                    <TableCell
+                      sx={{
+                        fontWeight: 500,
+                        color: "#6b7280",
+                        borderBottom: "1px solid #f0f0f0",
+                      }}
+                    >
+                      License Number
+                    </TableCell>
 
-              <TableRow>
-                <TableCell
-                  sx={{
-                    fontWeight: 500,
-                    color: "#6b7280",
-                    borderBottom: "none",
-                  }}
-                >
-                  Status
-                </TableCell>
+                    <TableCell
+                      sx={{
+                        fontWeight: 600,
+                        color: "#1f2937",
+                        borderBottom: "1px solid #f0f0f0",
+                      }}
+                    >
+                      {driver?.license_number || "-"}
+                    </TableCell>
+                  </TableRow>
 
-                <TableCell
-                  sx={{
-                    borderBottom: "none",
-                  }}
-                >
-                  <Chip
-                    label={driver?.status || "Unknown"}
-                    size="small"
-                    sx={{
-                      textTransform: "capitalize",
-                      fontWeight: 600,
-                    }}
-                  />
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Paper>
+                  <TableRow>
+                    <TableCell
+                      sx={{
+                        fontWeight: 500,
+                        color: "#6b7280",
+                        borderBottom: "none",
+                      }}
+                    >
+                      Status
+                    </TableCell>
+
+                    <TableCell
+                      sx={{
+                        borderBottom: "none",
+                      }}
+                    >
+                      <Chip
+                        label={driver?.status || "Unknown"}
+                        size="small"
+                        sx={{
+                          textTransform: "capitalize",
+                          fontWeight: 600,
+                        }}
+                      />
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Paper>
+        </>
+      )}
     </Box>
   );
 };
