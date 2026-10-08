@@ -22,11 +22,13 @@ const DriverDetails = () => {
   const [driver, setDriver] = useState(null);
   const [refresh, setRefresh] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchDriverDetails = async () => {
     try {
       setRefresh(true);
       setLoading(true);
+      setError("");
       const token = localStorage.getItem("token");
       const response = await fetch(`http://localhost:5000/api/drivers/${id}`, {
         headers: {
@@ -34,10 +36,15 @@ const DriverDetails = () => {
         },
       });
 
-    
+      if (!response.ok) {
+        throw new Error(
+          "Failed to fetch driver details. Please try again later.",
+        );
+      }
       const data = await response.json();
       console.log("Fetched API Driver Details:", data);
       setDriver(data.driver || null);
+      // setDriver(data);
     } catch (error) {
       console.error("Error while fetching driver details:", error);
     } finally {
@@ -79,6 +86,48 @@ const DriverDetails = () => {
           >
             Loading driver details...
           </Typography>
+        </Box>
+      ) : error ? (
+        <Box
+          sx={{
+            minHeight: "70vh",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            textAlign: "center",
+            gap: 1.5,
+          }}
+        >
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 600,
+              color: "#1f2937",
+            }}
+          >
+            Unable to load the driver details at this time. Please try again
+            later.
+          </Typography>
+          <Typography
+            variant="body2"
+            sx={{
+              color: "#6b7280",
+              maxWidth: 400,
+            }}
+          >
+            {error}
+          </Typography>
+          <Button
+            variant="outlined"
+            onClick={fetchDriverDetails}
+            sx={{
+              mt: 1,
+              textTransform: "none",
+            }}
+          >
+            Try Again
+          </Button>
         </Box>
       ) : (
         <>
