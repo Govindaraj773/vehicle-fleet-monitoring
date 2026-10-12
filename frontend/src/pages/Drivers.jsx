@@ -17,9 +17,15 @@ import {
   Select,
   MenuItem,
   Pagination,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Alert,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import addIcon from "@mui/icons-material/Add";
 
 const Drivers = () => {
   const navigate = useNavigate();
@@ -30,6 +36,16 @@ const Drivers = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [refresh, setRefresh] = useState(false);
+  // // CRUD Drivers states
+  const [openAddDriver, setOpenAddDriver] = useState(false);
+  const [newDriver, setNewDriver] = useState({
+    name: "",
+    phone: "",
+    licence_number: "",
+    status: "active",
+  });
+  const [errorDriverForm, setErrorDriverForm] = useState("");
+  const [addingNewDriver, setAddingNewDriver] = useState(false);
 
   const driversPerPage = 10;
 
@@ -100,6 +116,56 @@ const Drivers = () => {
     [statusFilter],
   );
 
+  // Creating New Driver Handler
+  const handleAddDriver = async (e) => {
+    e.preventDefault();
+    setErrorDriverForm("");
+
+    const name = newDriver.name.trim();
+    if (!name) {
+      setErrorDriverForm("Driver name is must required.");
+      return;
+    }
+    try {
+      setAddingNewDriver(true);
+
+      const token = localStorage.getItem("token");
+      const response = await fetch("http://localhost:5000/api/drivers", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          ...newDriver,
+          name,
+          phone: newDriver.phone.trim(),
+          licence_number: newDriver.licence_number.trim(),
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to add driver.");
+      }
+
+      setNewDriver({
+        name: "",
+        phone: "",
+        licence_number: "",
+        status: "active",
+      });
+      setOpenAddDriver(false);
+      fetchDrivers();
+    } catch (error) {
+      console.error("Error adding driver:", error);
+      setErrorDriverForm(
+        error.message || "Failed to add driver. Please try again later.",
+      );
+    } finally {
+      setAddingNewDriver();
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -162,6 +228,16 @@ const Drivers = () => {
           }}
         >
           {refresh ? "Refreshing..." : "Refresh"}
+        </Button>
+        <Button
+          variant="contained"
+          startIcon={<addIcon />}
+          onClick={() => {
+            setOpenAddDriver(true);
+            setErrorDriverForm("");
+          }}
+        >
+          Add Driver
         </Button>
       </Box>
 
@@ -324,6 +400,100 @@ const Drivers = () => {
           onChange={(event, value) => setPage(value)}
         />
       </Box>
+
+      {/* Creating New Driver Dialog */}
+      <Dialog
+        open={openAddDriver}
+        onClose={() => {
+          if (!addingNewDriver) {
+            setOpenAddDriver(false);
+          }
+        }}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle>Add New Driver</DialogTitle>
+
+        <DialogContent>
+          {errorDriverForm && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {errorDriverForm}
+            </Alert>
+          )}
+
+          <Box
+            component="form"
+            id="add-driver-form"
+            onSubmit={handleAddDriver}
+            sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}
+          >
+            <TextField
+              label="Driver Name"
+              value={newDriver.name}
+              onChange={(e) =>
+                setNewDriver({ ...newDriver, name: e.target.value })
+              }
+              required
+              fullWidth
+            />
+
+            <TextField
+              label="Phone Number"
+              value={newDriver.phone}
+              onChange={(e) =>
+                setNewDriver({ ...newDriver, phone: e.target.value })
+              }
+              fullWidth
+            />
+
+            <TextField
+              label="License Number"
+              value={newDriver.license_number}
+              onChange={(e) =>
+                setNewDriver({
+                  ...newDriver,
+                  license_number: e.target.value,
+                })
+              }
+              fullWidth
+            />
+
+            <TextField
+              select
+              label="Status"
+              value={newDriver.status}
+              onChange={(e) =>
+                setNewDriver({ ...newDriver, status: e.target.value })
+              }
+              fullWidth
+            >
+              <MenuItem value="available">Available</MenuItem>
+              <MenuItem value="busy">Busy</MenuItem>
+              <MenuItem value="not available">Not Available</MenuItem>
+              <MenuItem value="active">Active</MenuItem>
+              <MenuItem value="not active">Not Active</MenuItem>
+            </TextField>
+          </Box>
+        </DialogContent>
+
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button
+            onClick={() => setOpenAddDriver(false)}
+            disabled={addingNewDriver}
+          >
+            Cancel
+          </Button>
+
+          <Button
+            variant="contained"
+            type="submit"
+            form="add-driver-form"
+            disabled={addingNewDriver}
+          >
+            Add Driver
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
