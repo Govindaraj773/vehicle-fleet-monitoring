@@ -25,7 +25,9 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import addIcon from "@mui/icons-material/Add";
+import AddIcon from "@mui/icons-material/Add";
+
+import UpdateDriverDetails from "../components/drivers/UpdateDriverDetails";
 
 const Drivers = () => {
   const navigate = useNavigate();
@@ -46,6 +48,11 @@ const Drivers = () => {
   });
   const [errorDriverForm, setErrorDriverForm] = useState("");
   const [addingNewDriver, setAddingNewDriver] = useState(false);
+
+  // Update Driver states
+  const [openUpdateDriver, setOpenUpdateDriver] = useState(false);
+  const [selectedDriver, setSelectedDriver] = useState(null);
+  const [updatingSelectedDriver, setUpdatingSelectedDriver] = useState(false);
 
   const driversPerPage = 10;
 
@@ -69,6 +76,25 @@ const Drivers = () => {
     } finally {
       setLoading(false);
       setRefresh(false);
+    }
+  };
+
+  // Update Driver functionality
+  const handleOpenUpdateDriver = (driver) => {
+    setSelectedDriver(driver);
+    setOpenUpdateDriver(true);
+  };
+
+  // This function is called after a driver has been updated successfully
+  const handleDriverUpdated = async () => {
+    setUpdatingSelectedDriver(true);
+
+    try {
+      await fetchDrivers();
+      setOpenUpdateDriver(false);
+      setSelectedDriver(null);
+    } finally {
+      setUpdatingSelectedDriver(false);
     }
   };
 
@@ -231,7 +257,7 @@ const Drivers = () => {
         </Button>
         <Button
           variant="contained"
-          startIcon={<addIcon />}
+          startIcon={<AddIcon />}
           onClick={() => {
             setOpenAddDriver(true);
             setErrorDriverForm("");
@@ -368,17 +394,49 @@ const Drivers = () => {
                     />
                   </TableCell>
 
-                  <TableCell>
+                  <TableCell
+                    sx={{ display: "flex", gap: 1, alignItems: "center" }}
+                  >
                     <Button
                       variant="outlined"
                       size="small"
+                      onClick={() => navigate(`/drivers/${driver.id}`)}
                       sx={{
                         textTransform: "none",
-                        minWidth: 60,
+                        minWidth: 76,
+                        px: 2,
+                        py: 0.75,
+                        borderRadius: 2,
+                        fontWeight: 600,
+                        borderColor: "primary.main",
+                        color: "primary.main",
+                        "&:hover": {
+                          backgroundColor: "action.hover",
+                          borderColor: "primary.dark",
+                        },
                       }}
-                      onClick={() => navigate(`/drivers/${driver.id}`)}
                     >
                       View
+                    </Button>
+
+                    <Button
+                      variant="contained"
+                      size="small"
+                      onClick={() => handleOpenUpdateDriver(driver)}
+                      sx={{
+                        textTransform: "none",
+                        minWidth: 80,
+                        px: 2,
+                        py: 0.75,
+                        borderRadius: 2,
+                        fontWeight: 600,
+                        boxShadow: "none",
+                        "&:hover": {
+                          boxShadow: 1,
+                        },
+                      }}
+                    >
+                      Update
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -494,6 +552,17 @@ const Drivers = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Update Driver Details Dialog */}
+      <UpdateDriverDetails
+        open={openUpdateDriver}
+        driver={selectedDriver}
+        onClose={() => {
+          setOpenUpdateDriver(false);
+          setSelectedDriver(null);
+        }}
+        onUpdated={handleDriverUpdated}
+      />
     </Box>
   );
 };
