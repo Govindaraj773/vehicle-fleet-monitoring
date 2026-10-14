@@ -81,6 +81,7 @@ const Drivers = () => {
 
   // Update Driver functionality
   const handleOpenUpdateDriver = (driver) => {
+    console.log("Selected driver for update:", driver);
     setSelectedDriver(driver);
     setOpenUpdateDriver(true);
   };

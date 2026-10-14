@@ -27,9 +27,10 @@ const UpdateDriverDetails = ({ open, driver, onClose, onUpdated }) => {
       setUpdatedDriver({
         name: driver.name || "",
         phone: driver.phone || "",
-        licence_number: driver.licence_number || "",
-        status: driver.status || "Busy",
+        license_number: driver.license_number || "",
+        status: driver.status || "available",
       });
+
       setErrorUpdateDriver("");
     }
   }, [open, driver]);
@@ -76,8 +77,8 @@ const UpdateDriverDetails = ({ open, driver, onClose, onUpdated }) => {
             ...updatedDriver,
             name: (updatedDriver.name || "").trim(),
             phone: (updatedDriver.phone || "").trim(),
-            license_number: updatedDriver.license_number || "",
-            // license_number: (updatedDriver.license_number || "").trim(),
+            // license_number: updatedDriver.license_number || "",
+            license_number: (updatedDriver.license_number || "").trim(),
           }),
         },
       );
