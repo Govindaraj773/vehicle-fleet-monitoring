@@ -16,6 +16,8 @@ import {
   Select,
   MenuItem,
   Pagination,
+  Chip,
+  Alert,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate } from "react-router-dom";
@@ -94,11 +96,17 @@ const Trips = () => {
   const currentTrips = filteredTrips.slice(indexOfFirstTrip, indexOfLastTrip);
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box
+      sx={{
+        p: 3,
+        minHeight: "100vh",
+        backgroundColor: "#f8f9fa",
+      }}
+    >
       <Box
         sx={{
           display: "flex",
-          justifyContent: "space-between",
+          justifyContent: "left",
           alignItems: "center",
         }}
       >
@@ -106,15 +114,25 @@ const Trips = () => {
           startIcon={<ArrowBackIcon />}
           onClick={() => navigate("/")}
           sx={{ mb: 2 }}
+          variant="outlined"
+          sx={{
+            textTransform: "none",
+            color: "#1976d2",
+            borderColor: "#90caf9",
+            backgroundColor: "#e3f2fd",
+            "&:hover": {
+              backgroundColor: "#bbdefb",
+              borderColor: "#64b5f6",
+            },
+          }}
         >
-          Back
+          Back To Dashboard
         </Button>
-        <Typography variant="h5" sx={{ mb: 1, fontWeight: 600 }}>
-          Trips
-        </Typography>
-
-        <Typography variant="body2" sx={{ mb: 3, color: "text.secondary" }}>
-          Monitor and manage fleet trips
+        <Typography
+          variant="h5"
+          sx={{ mb: 1, fontWeight: 600, paddingLeft: 30, color: "black" }}
+        >
+          All Trips
         </Typography>
       </Box>
 
@@ -128,14 +146,13 @@ const Trips = () => {
         }}
       >
         <TextField
-          label="Search Trips"
+          label="Search Trips..."
           placeholder="Trip ID, Vehicle ID or Driver ID"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           size="small"
           sx={{
             width: { xs: "100%", sm: 350 },
-            backgroundColor: "primary.main",
             borderRadius: 2,
           }}
         />
@@ -144,7 +161,6 @@ const Trips = () => {
           size="small"
           sx={{
             width: { xs: "100%", sm: 180 },
-            backgroundColor: "primary.main",
             borderRadius: 2,
           }}
         >

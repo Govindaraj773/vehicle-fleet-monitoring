@@ -35,14 +35,15 @@ const Vehicles = () => {
   }, []);
 
   return (
-    <Box>
-      <Typography variant="h4">Vehicles</Typography>
-
-      <Typography variant="body2" color="text.secondary">
-        Monitor and Manage Your Fleet Vehicles
-      </Typography>
-
+    <Box
+      sx={{
+        p: 3,
+        minHeight: "100vh",
+        backgroundColor: "#f8f9fa",
+      }}
+    >
       <VehicleTable vehicles={vehicles} />
+      {/* <Typography variant="h4">Vehicles</Typography> */}
     </Box>
   );
 };

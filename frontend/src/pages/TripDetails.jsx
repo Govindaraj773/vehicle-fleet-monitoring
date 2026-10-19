@@ -82,7 +82,8 @@ const TripDetails = () => {
   };
 
   return (
-    <Box sx={{ mb: 3 }}>
+    <Box sx={{ mb: 3 }}
+    >
       <Box
         sx={{
           display: "flex",

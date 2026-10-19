@@ -26,6 +26,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import AddIcon from "@mui/icons-material/Add";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 import UpdateDriverDetails from "../components/drivers/UpdateDriverDetails";
 import DeleteDriverDetails from "../components/drivers/DeleteDriverDetails";
@@ -233,6 +234,7 @@ const Drivers = () => {
         <Button
           variant="outlined"
           onClick={() => navigate("/")}
+          startIcon={<ArrowBackIcon />}
           sx={{
             textTransform: "none",
             color: "#1976d2",
@@ -246,6 +248,7 @@ const Drivers = () => {
         >
           Back to Home
         </Button>
+
         <Typography
           variant="h5"
           sx={{
@@ -254,17 +257,9 @@ const Drivers = () => {
             mb: 0.5,
           }}
         >
-          Drivers
+          All Drivers List
         </Typography>
 
-        <Typography
-          variant="body2"
-          sx={{
-            color: "#6b7280",
-          }}
-        >
-          Manage and monitor fleet drivers
-        </Typography>
         <Button
           variant="outlined"
           startIcon={<RefreshIcon />}
@@ -276,6 +271,7 @@ const Drivers = () => {
         >
           {refresh ? "Refreshing..." : "Refresh"}
         </Button>
+
         <Button
           variant="contained"
           startIcon={<AddIcon />}

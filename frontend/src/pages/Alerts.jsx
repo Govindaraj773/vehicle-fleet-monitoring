@@ -95,216 +95,219 @@ const Alerts = () => {
   );
 
   return (
-    <div>
+    <Box
+      sx={{
+        p: 3,
+        minHeight: "100vh",
+        backgroundColor: "#f8f9fa",
+      }}
+    >
       <Box
         sx={{
-          p: 3,
-          minHeight: "100vh",
-          backgroundColor: "#1b1212",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
         }}
       >
-        <Box
+        <Button
+          startIcon={<ArrowBackIcon />}
+          variant="outlined"
+          onClick={() => navigate("/")}
           sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
+            textTransform: "none",
+            color: "#1976d2",
+            borderColor: "#90caf9",
+            backgroundColor: "#e3f2fd",
+            "&:hover": {
+              backgroundColor: "#bbdefb",
+              borderColor: "#64b5f6",
+            },
           }}
         >
-          <Button
-            startIcon={<ArrowBackIcon />}
-            onClick={() => navigate("/")}
-            sx={{ mb: 2 }}
-          >
-            Back
-          </Button>
-          <Typography variant="h4" fontWeight="bold">
-            Alerts
-          </Typography>
+          Back To Dashboard
+        </Button>
 
-          {/* severity dropdown */}
-          <FormControl
-            size="small"
-            sx={{
-              minWidth: 100,
-              backgroundColor: "primary.main",
-              borderRadius: 1,
-            }}
-          >
-            <InputLabel>Severity</InputLabel>
-            <Select
-              value={severityFilter}
-              label="Severity"
-              onChange={(e) => setSeverityFilter(e.target.value)}
-            >
-              <MenuItem value="all">All Severities</MenuItem>
-              <MenuItem value="critical">Critical</MenuItem>
-              <MenuItem value="high">High</MenuItem>
-              <MenuItem value="medium">Medium</MenuItem>
-            </Select>
-          </FormControl>
-
-          {/* status dropdown */}
-          <FormControl
-            size="small"
-            sx={{
-              minWidth: 100,
-              backgroundColor: "primary.main",
-              borderRadius: 1,
-            }}
-          >
-            <InputLabel>Status</InputLabel>
-            <Select
-              value={statusFilter}
-              label="status"
-              onChange={(e) => setStatusFilter(e.target.value)}
-            >
-              <MenuItem value="all">All Status</MenuItem>
-              <MenuItem value="active">Active</MenuItem>
-              <MenuItem value="resolved">Resolved</MenuItem>
-            </Select>
-          </FormControl>
-
-          {/* refresh button */}
-          <Button
-            variant="contained"
-            onClick={fetchAlerts}
-            disabled={loading}
-            startIcon={<RefreshIcon />}
-          >
-            Refresh
-          </Button>
-        </Box>
-
-        <Typography variant="body1" sx={{ mt: 1, mb: 3 }}>
-          Monitor and manage vehicle alerts
+        <Typography variant="h4" fontWeight="bold" sx={{ color: "black" }}>
+          All Alerts
         </Typography>
 
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell
-                  sx={{ fontWeight: "bold", backgroundColor: "grey.100" }}
-                >
-                  ID
-                </TableCell>
-                <TableCell
-                  sx={{ fontWeight: "bold", backgroundColor: "grey.100" }}
-                >
-                  Vehicle
-                </TableCell>
-                <TableCell
-                  sx={{ fontWeight: "bold", backgroundColor: "grey.100" }}
-                >
-                  Alert Type
-                </TableCell>
-                <TableCell
-                  sx={{ fontWeight: "bold", backgroundColor: "grey.100" }}
-                >
-                  Message
-                </TableCell>
-                <TableCell
-                  sx={{ fontWeight: "bold", backgroundColor: "grey.100" }}
-                >
-                  Severity
-                </TableCell>
-                <TableCell
-                  sx={{ fontWeight: "bold", backgroundColor: "grey.100" }}
-                >
-                  Resolved
-                </TableCell>
-                <TableCell
-                  sx={{ fontWeight: "bold", backgroundColor: "grey.100" }}
-                >
-                  Created At
-                </TableCell>
-              </TableRow>
-            </TableHead>
-
-            <TableBody>
-              {loading ? (
-                <TableRow>
-                  <TableCell colSpan={6} align="center">
-                    Loading Alerts...
-                  </TableCell>
-                </TableRow>
-              ) : filteredAlerts.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={6} align="center">
-                    No Alerts
-                  </TableCell>
-                </TableRow>
-              ) : (
-                // filteredAlerts.map((alert) => (
-                paginatedAlerts.map((alert) => (
-                  <TableRow key={alert.id}>
-                    <TableCell>{alert.id}</TableCell>
-
-                    <TableCell>{alert.vehicle_id}</TableCell>
-
-                    <TableCell>{alert.alert_type}</TableCell>
-
-                    <TableCell>{alert.message}</TableCell>
-
-                    <TableCell>
-                      <Chip
-                        label={alert.severity}
-                        size="small"
-                        color={
-                          alert.severity === "high"
-                            ? "error"
-                            : alert.severity === "medium"
-                              ? "warning"
-                              : "success"
-                        }
-                      />
-                    </TableCell>
-
-                    <TableCell>
-                      <Chip
-                        label={alert.is_resolved ? "Resolved" : "Active"}
-                        size="small"
-                        color={alert.is_resolved ? "success" : "error"}
-                      />
-                    </TableCell>
-
-                    <TableCell>
-                      {new Date(alert.created_at).toLocaleString()}
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <Box
+        {/* severity dropdown */}
+        <FormControl
+          size="small"
           sx={{
-            display: "flex",
-            justifyContent: "center",
-            mt: 2,
+            minWidth: 100,
+            borderRadius: 1,
           }}
         >
-          <Pagination
-            count={Math.ceil(filteredAlerts.length / alertsPerPage)}
-            page={page}
-            onChange={(event, value) => setPage(value)}
-            sx={{
-              "& .MuiPaginationItem-root": {
-                backgroundColor: "#f8fbfa",
-              },
+          <InputLabel>Severity</InputLabel>
+          <Select
+            value={severityFilter}
+            label="Severity"
+            onChange={(e) => setSeverityFilter(e.target.value)}
+          >
+            <MenuItem value="all">All Severities</MenuItem>
+            <MenuItem value="critical">Critical</MenuItem>
+            <MenuItem value="high">High</MenuItem>
+            <MenuItem value="medium">Medium</MenuItem>
+          </Select>
+        </FormControl>
 
-              "& .MuiPaginationItem-root.Mui-selected": {
-                backgroundColor: "#f3ff06",
-              },
+        {/* status dropdown */}
+        <FormControl
+          size="small"
+          sx={{
+            minWidth: 100,
+            borderRadius: 1,
+          }}
+        >
+          <InputLabel>Status</InputLabel>
+          <Select
+            value={statusFilter}
+            label="status"
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <MenuItem value="all">All Status</MenuItem>
+            <MenuItem value="active">Active</MenuItem>
+            <MenuItem value="resolved">Resolved</MenuItem>
+          </Select>
+        </FormControl>
 
-              "& .MuiPaginationItem-root.MuiPaginationItem-previousNext": {
-                backgroundColor: "#1306a9",
-              },
-            }}
-          />
-        </Box>
+        {/* refresh button */}
+        <Button
+          variant="contained"
+          onClick={fetchAlerts}
+          disabled={loading}
+          startIcon={<RefreshIcon />}
+        >
+          Refresh
+        </Button>
       </Box>
-    </div>
+
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell
+                sx={{ fontWeight: "bold", backgroundColor: "grey.100" }}
+              >
+                ID
+              </TableCell>
+              <TableCell
+                sx={{ fontWeight: "bold", backgroundColor: "grey.100" }}
+              >
+                Vehicle
+              </TableCell>
+              <TableCell
+                sx={{ fontWeight: "bold", backgroundColor: "grey.100" }}
+              >
+                Alert Type
+              </TableCell>
+              <TableCell
+                sx={{ fontWeight: "bold", backgroundColor: "grey.100" }}
+              >
+                Message
+              </TableCell>
+              <TableCell
+                sx={{ fontWeight: "bold", backgroundColor: "grey.100" }}
+              >
+                Severity
+              </TableCell>
+              <TableCell
+                sx={{ fontWeight: "bold", backgroundColor: "grey.100" }}
+              >
+                Resolved
+              </TableCell>
+              <TableCell
+                sx={{ fontWeight: "bold", backgroundColor: "grey.100" }}
+              >
+                Created At
+              </TableCell>
+            </TableRow>
+          </TableHead>
+
+          <TableBody>
+            {loading ? (
+              <TableRow>
+                <TableCell colSpan={6} align="center">
+                  Loading Alerts...
+                </TableCell>
+              </TableRow>
+            ) : filteredAlerts.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={6} align="center">
+                  No Alerts
+                </TableCell>
+              </TableRow>
+            ) : (
+              // filteredAlerts.map((alert) => (
+              paginatedAlerts.map((alert) => (
+                <TableRow key={alert.id}>
+                  <TableCell>{alert.id}</TableCell>
+
+                  <TableCell>{alert.vehicle_id}</TableCell>
+
+                  <TableCell>{alert.alert_type}</TableCell>
+
+                  <TableCell>{alert.message}</TableCell>
+
+                  <TableCell>
+                    <Chip
+                      label={alert.severity}
+                      size="small"
+                      color={
+                        alert.severity === "high"
+                          ? "error"
+                          : alert.severity === "medium"
+                            ? "warning"
+                            : "success"
+                      }
+                    />
+                  </TableCell>
+
+                  <TableCell>
+                    <Chip
+                      label={alert.is_resolved ? "Resolved" : "Active"}
+                      size="small"
+                      color={alert.is_resolved ? "success" : "error"}
+                    />
+                  </TableCell>
+
+                  <TableCell>
+                    {new Date(alert.created_at).toLocaleString()}
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          mt: 2,
+        }}
+      >
+        <Pagination
+          count={Math.ceil(filteredAlerts.length / alertsPerPage)}
+          page={page}
+          onChange={(event, value) => setPage(value)}
+          sx={{
+            "& .MuiPaginationItem-root": {
+              backgroundColor: "#f8fbfa",
+            },
+
+            "& .MuiPaginationItem-root.Mui-selected": {
+              backgroundColor: "#f3ff06",
+            },
+
+            "& .MuiPaginationItem-root.MuiPaginationItem-previousNext": {
+              backgroundColor: "#1306a9",
+            },
+          }}
+        />
+      </Box>
+    </Box>
   );
 };
 

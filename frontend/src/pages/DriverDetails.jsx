@@ -148,6 +148,13 @@ const DriverDetails = () => {
                 left: 0,
                 top: 0,
                 textTransform: "none",
+                color: "#1976d2",
+                borderColor: "#90caf9",
+                backgroundColor: "#e3f2fd",
+                "&:hover": {
+                  backgroundColor: "#bbdefb",
+                  borderColor: "#64b5f6",
+                },
               }}
             >
               Back to Drivers

@@ -31,6 +31,7 @@ import {
   Typography,
   TextField,
 } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const MapUpdater = ({ latitude, longitude }) => {
   const map = useMap();
@@ -129,47 +130,42 @@ const VehicleDetails = () => {
 
   return (
     <>
-      <Box>
-        {/* <Stack
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={3}
+      <Box
+        sx={{
+          p: 3,
+          minHeight: "100vh",
+          backgroundColor: "#f8f9fa",
+        }}
       >
-        <Button variant="outlined" onClick={() => navigate("/vehicles")}>
-          Back to Vehicles
-        </Button>
-        <Box>
-          <Typography variant="h4" fontWeight={600}>
-            {vehicle.vehicle_number}
-          </Typography>
-
-          <Typography color="text.secondary">
-            {vehicle.manufacturer} {vehicle.model}
-          </Typography>
-        </Box>
-      </Stack> */}
-
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-          mb={4}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 3,
+          }}
         >
-          {/* Left: Back Button */}
+          {/*Back Button */}
           <Button
             variant="outlined"
             onClick={() => navigate("/vehicles")}
+            startIcon={<ArrowBackIcon />}
             sx={{
               textTransform: "none",
-              borderRadius: 2,
+              color: "#1976d2",
+              borderColor: "#90caf9",
+              backgroundColor: "#e3f2fd",
+              "&:hover": {
+                backgroundColor: "#bbdefb",
+                borderColor: "#64b5f6",
+              },
             }}
           >
-            ← Back to Vehicles
+            Back to Vehicles
           </Button>
 
           {/* Center: Vehicle Information */}
-          <Box sx={{ flex: 1, ml: 3 }}>
+          <Box sx={{ fontSize: 30, color: "black" }}>
             <Typography variant="h4" fontWeight={700}>
               {vehicle.vehicle_number}
             </Typography>
@@ -194,215 +190,224 @@ const VehicleDetails = () => {
               fontWeight: 600,
             }}
           />
-        </Stack>
+        </Box>
 
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={4}>
-            <Card>
-              <CardContent>
-                <Typography variant="subtitle2" color="text.secondary">
-                  Vehicle Type
-                </Typography>
-
-                <Typography variant="h6" mt={1}>
-                  {vehicle.vehicle_type}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <Card>
-              <CardContent>
-                <Typography variant="subtitle2" color="text.secondary">
-                  Status
-                </Typography>
-
-                <Box mt={1}>
-                  <Chip
-                    label={vehicle.status}
-                    color={
-                      vehicle.status === "active"
-                        ? "success"
-                        : vehicle.status === "offline"
-                          ? "error"
-                          : "default"
-                    }
-                    sx={{ textTransform: "capitalize" }}
-                  />
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <Card>
-              <CardContent>
-                <Typography variant="subtitle2" color="text.secondary">
-                  Speed Limit
-                </Typography>
-
-                <Typography variant="h6" mt={1}>
-                  {vehicle.speed_limit} km/h
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Card>
-              <CardContent>
-                <Typography variant="subtitle2" color="text.secondary">
-                  Manufacturer
-                </Typography>
-
-                <Typography variant="h6" mt={1}>
-                  {vehicle.manufacturer}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Card>
-              <CardContent>
-                <Typography variant="subtitle2" color="text.secondary">
-                  Model / Year
-                </Typography>
-
-                <Typography variant="h6" mt={1}>
-                  {vehicle.model} / {vehicle.year}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-
-          {/* edit the vehicle details */}
-          {editMode && (
-            <Grid item xs={12}>
-              <Card
-                sx={{
-                  mb: 4,
-                  borderRadius: 3,
-                  boxShadow: 2,
-                }}
-              >
-                <CardContent sx={{ p: 3 }}>
-                  <Typography variant="h6" fontWeight={600} mb={3}>
-                    Edit Vehicle
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ mb: 3 }}
-                  >
-                    Update the vehicle information below.
+        {/* Telemetry details */}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 3,
+          }}
+        >
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={4}>
+              <Card>
+                <CardContent>
+                  <Typography variant="subtitle2" color="text.secondary">
+                    Vehicle Type
                   </Typography>
 
-                  {/* All textfields */}
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} md={6}>
-                      <TextField
-                        label="Vehicle Number"
-                        value={formData.vehicle_number}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            vehicle_number: e.target.value,
-                          })
-                        }
-                        fullWidth
-                      />
+                  <Typography variant="h6" mt={1}>
+                    {vehicle.vehicle_type}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <Card>
+                <CardContent>
+                  <Typography variant="subtitle2" color="text.secondary">
+                    Status
+                  </Typography>
+
+                  <Box mt={1}>
+                    <Chip
+                      label={vehicle.status}
+                      color={
+                        vehicle.status === "active"
+                          ? "success"
+                          : vehicle.status === "offline"
+                            ? "error"
+                            : "default"
+                      }
+                      sx={{ textTransform: "capitalize" }}
+                    />
+                  </Box>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <Card>
+                <CardContent>
+                  <Typography variant="subtitle2" color="text.secondary">
+                    Speed Limit
+                  </Typography>
+
+                  <Typography variant="h6" mt={1}>
+                    {vehicle.speed_limit} km/h
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Card>
+                <CardContent>
+                  <Typography variant="subtitle2" color="text.secondary">
+                    Manufacturer
+                  </Typography>
+
+                  <Typography variant="h6" mt={1}>
+                    {vehicle.manufacturer}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Card>
+                <CardContent>
+                  <Typography variant="subtitle2" color="text.secondary">
+                    Model / Year
+                  </Typography>
+
+                  <Typography variant="h6" mt={1}>
+                    {vehicle.model} / {vehicle.year}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+
+            {/* edit the vehicle details */}
+            {editMode && (
+              <Grid item xs={12}>
+                <Card
+                  sx={{
+                    mb: 4,
+                    borderRadius: 3,
+                    boxShadow: 2,
+                  }}
+                >
+                  <CardContent sx={{ p: 3 }}>
+                    <Typography variant="h6" fontWeight={600} mb={3}>
+                      Edit Vehicle
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ mb: 3 }}
+                    >
+                      Update the vehicle information below.
+                    </Typography>
+
+                    {/* All textfields */}
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                          label="Vehicle Number"
+                          value={formData.vehicle_number}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              vehicle_number: e.target.value,
+                            })
+                          }
+                          fullWidth
+                        />
+                      </Grid>
+
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                          label="Vehicle Type"
+                          value={formData.vehicle_type}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              vehicle_type: e.target.value,
+                            })
+                          }
+                          fullWidth
+                        />
+                      </Grid>
+
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                          label="Manufacturer"
+                          value={formData.manufacturer}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              manufacturer: e.target.value,
+                            })
+                          }
+                          fullWidth
+                        />
+                      </Grid>
+
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                          label="Model"
+                          value={formData.model}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              model: e.target.value,
+                            })
+                          }
+                          fullWidth
+                        />
+                      </Grid>
+
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                          label="Year"
+                          type="number"
+                          value={formData.year}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              year: e.target.value,
+                            })
+                          }
+                          fullWidth
+                        />
+                      </Grid>
+
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                          label="Driver ID"
+                          value={formData.driver_id}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              driver_id: e.target.value,
+                            })
+                          }
+                          fullWidth
+                        />
+                      </Grid>
+
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                          label="Status"
+                          value={formData.status}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              status: e.target.value,
+                            })
+                          }
+                          fullWidth
+                        />
+                      </Grid>
                     </Grid>
 
-                    <Grid item xs={12} md={6}>
-                      <TextField
-                        label="Vehicle Type"
-                        value={formData.vehicle_type}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            vehicle_type: e.target.value,
-                          })
-                        }
-                        fullWidth
-                      />
-                    </Grid>
-
-                    <Grid item xs={12} md={6}>
-                      <TextField
-                        label="Manufacturer"
-                        value={formData.manufacturer}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            manufacturer: e.target.value,
-                          })
-                        }
-                        fullWidth
-                      />
-                    </Grid>
-
-                    <Grid item xs={12} md={6}>
-                      <TextField
-                        label="Model"
-                        value={formData.model}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            model: e.target.value,
-                          })
-                        }
-                        fullWidth
-                      />
-                    </Grid>
-
-                    <Grid item xs={12} md={6}>
-                      <TextField
-                        label="Year"
-                        type="number"
-                        value={formData.year}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            year: e.target.value,
-                          })
-                        }
-                        fullWidth
-                      />
-                    </Grid>
-
-                    <Grid item xs={12} md={6}>
-                      <TextField
-                        label="Driver ID"
-                        value={formData.driver_id}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            driver_id: e.target.value,
-                          })
-                        }
-                        fullWidth
-                      />
-                    </Grid>
-
-                    <Grid item xs={12} md={6}>
-                      <TextField
-                        label="Status"
-                        value={formData.status}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            status: e.target.value,
-                          })
-                        }
-                        fullWidth
-                      />
-                    </Grid>
-                  </Grid>
-
-                  <Stack
-                    direction="row"
-                    justifyContent="flex-end"
-                    sx={{ mt: 3 }}
-                  >
-                    {/* <Button
+                    <Stack
+                      direction="row"
+                      justifyContent="flex-end"
+                      sx={{ mt: 3 }}
+                    >
+                      {/* <Button
                       variant="contained"
                       sx={{ textTransform: "none", borderRadius: 2, px: 3 }}
                       onClick={async () => {
@@ -438,400 +443,404 @@ const VehicleDetails = () => {
                     >
                       Update Vehicle
                     </Button> */}
-                    {/* Update vehicle button */}
-                    <Button
-                      variant="contained"
-                      sx={{
-                        textTransform: "none",
-                        borderRadius: 2,
-                        px: 3,
-                      }}
-                      onClick={async () => {
-                        try {
-                          const token = localStorage.getItem("token");
+                      {/* Update vehicle button */}
+                      <Button
+                        variant="contained"
+                        sx={{
+                          textTransform: "none",
+                          borderRadius: 2,
+                          px: 3,
+                        }}
+                        onClick={async () => {
+                          try {
+                            const token = localStorage.getItem("token");
 
-                          const response = await fetch(
-                            `http://localhost:5000/api/vehicles/${vehicle.id}`,
-                            {
-                              method: "PUT",
-                              headers: {
-                                "Content-Type": "application/json",
-                                Authorization: `Bearer ${token}`,
+                            const response = await fetch(
+                              `http://localhost:5000/api/vehicles/${vehicle.id}`,
+                              {
+                                method: "PUT",
+                                headers: {
+                                  "Content-Type": "application/json",
+                                  Authorization: `Bearer ${token}`,
+                                },
+                                body: JSON.stringify(formData),
                               },
-                              body: JSON.stringify(formData),
-                            },
+                            );
+
+                            const data = await response.json();
+
+                            console.log("Update Vehicle Response:", data);
+
+                            if (!response.ok) {
+                              alert(data.message || "Failed to update vehicle");
+                              return;
+                            }
+
+                            alert("Vehicle updated successfully");
+
+                            navigate("/vehicles");
+                          } catch (error) {
+                            console.error("Update Vehicle Error:", error);
+                            alert(error.message);
+                            // alert(
+                            //   "Something went wrong while updating the vehicle",
+                            // );
+                          }
+                        }}
+                      >
+                        Update Vehicle
+                      </Button>
+
+                      {/* Delete vehicle button */}
+                      <Button
+                        variant="contained"
+                        sx={{
+                          textTransform: "none",
+                          borderRadius: 2,
+                          px: 3,
+                        }}
+                        onClick={async () => {
+                          const confirmed = window.confirm(
+                            `Are you sure you want to delete vehicle ${vehicle.vehicle_number}?`,
                           );
-
-                          const data = await response.json();
-
-                          console.log("Update Vehicle Response:", data);
-
-                          if (!response.ok) {
-                            alert(data.message || "Failed to update vehicle");
+                          if (!confirmed) {
                             return;
                           }
-
-                          alert("Vehicle updated successfully");
-
-                          navigate("/vehicles");
-                        } catch (error) {
-                          console.error("Update Vehicle Error:", error);
-                          alert(error.message);
-                          // alert(
-                          //   "Something went wrong while updating the vehicle",
-                          // );
-                        }
-                      }}
-                    >
-                      Update Vehicle
-                    </Button>
-
-                    {/* Delete vehicle button */}
-                    <Button
-                      variant="contained"
-                      sx={{
-                        textTransform: "none",
-                        borderRadius: 2,
-                        px: 3,
-                      }}
-                      onClick={async () => {
-                        const confirmed = window.confirm(
-                          `Are you sure you want to delete vehicle ${vehicle.vehicle_number}?`,
-                        );
-                        if (!confirmed) {
-                          return;
-                        }
-                        try {
-                          const token = localStorage.getItem("token");
-                          const response = await fetch(
-                            `http://localhost:5000/api/vehicles/${vehicle.id}`,
-                            {
-                              method: "DELETE",
-                              headers: {
-                                Authorization: `Bearer ${token}`,
+                          try {
+                            const token = localStorage.getItem("token");
+                            const response = await fetch(
+                              `http://localhost:5000/api/vehicles/${vehicle.id}`,
+                              {
+                                method: "DELETE",
+                                headers: {
+                                  Authorization: `Bearer ${token}`,
+                                },
                               },
-                            },
-                          );
-                          const data = response.json();
-                          console.log("Vehicle deleted response:", data);
+                            );
+                            const data = response.json();
+                            console.log("Vehicle deleted response:", data);
 
-                          if (!response.ok) {
-                            alert(data.message || "Failed to delete vehicle");
-                            return;
+                            if (!response.ok) {
+                              alert(data.message || "Failed to delete vehicle");
+                              return;
+                            }
+                            alert("Vehicle Deleted successfully");
+                            navigate("/vehicles");
+                          } catch (error) {
+                            console.error("Delete vehicle error:", error);
+                            alert(
+                              "SOmething went wrong while deleting vehicle",
+                            );
                           }
-                          alert("Vehicle Deleted successfully");
-                          navigate("/vehicles");
-                        } catch (error) {
-                          console.error("Delete vehicle error:", error);
-                          alert("SOmething went wrong while deleting vehicle");
-                        }
-                      }}
-                    >
-                      Delete Vehicle
-                    </Button>
-                  </Stack>
+                        }}
+                      >
+                        Delete Vehicle
+                      </Button>
+                    </Stack>
+                  </CardContent>
+                </Card>
+              </Grid>
+            )}
+
+            {/* live telemetry */}
+            <Grid item xs={12}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>
+                    Live Telemetry
+                  </Typography>
+
+                  <Chip
+                    label="Live Data"
+                    color="success"
+                    size="small"
+                    sx={{ mb: 3 }}
+                  />
+
+                  {telemetry ? (
+                    <Grid container spacing={3}>
+                      <Grid
+                        item
+                        xs={12}
+                        sm={6}
+                        md={3}
+                        sx={{
+                          border: "1px solid",
+                          borderColor: "divider",
+                          borderRadius: 2,
+                          p: 2,
+                        }}
+                      >
+                        <Typography variant="body2" color="text.secondary">
+                          Speed
+                        </Typography>
+
+                        <Typography variant="h6">
+                          {telemetry.speed} km/h
+                        </Typography>
+                      </Grid>
+
+                      <Grid
+                        item
+                        xs={12}
+                        sm={6}
+                        md={3}
+                        sx={{
+                          border: "1px solid",
+                          borderColor: "divider",
+                          borderRadius: 2,
+                          p: 2,
+                        }}
+                      >
+                        <Typography variant="body2" color="text.secondary">
+                          Fuel Level
+                        </Typography>
+
+                        <Typography variant="h6">
+                          {telemetry.fuel_level}%
+                        </Typography>
+                      </Grid>
+
+                      <Grid
+                        item
+                        xs={12}
+                        sm={6}
+                        md={3}
+                        sx={{
+                          border: "1px solid",
+                          borderColor: "divider",
+                          borderRadius: 2,
+                          p: 2,
+                        }}
+                      >
+                        <Typography variant="body2" color="text.secondary">
+                          Battery
+                        </Typography>
+
+                        <Typography variant="h6">
+                          {telemetry.battery_level} V
+                        </Typography>
+                      </Grid>
+
+                      <Grid
+                        item
+                        xs={12}
+                        sm={6}
+                        md={3}
+                        sx={{
+                          border: "1px solid",
+                          borderColor: "divider",
+                          borderRadius: 2,
+                          p: 2,
+                        }}
+                      >
+                        <Typography variant="body2" color="text.secondary">
+                          Engine Temperature
+                        </Typography>
+
+                        <Typography variant="h6">
+                          {telemetry.engine_temperature} °C
+                        </Typography>
+                      </Grid>
+
+                      <Grid
+                        item
+                        xs={12}
+                        sm={6}
+                        md={3}
+                        sx={{
+                          border: "1px solid",
+                          borderColor: "divider",
+                          borderRadius: 2,
+                          p: 2,
+                        }}
+                      >
+                        <Typography variant="body2" color="text.secondary">
+                          Ignition
+                        </Typography>
+
+                        <Chip
+                          label={
+                            Number(telemetry.speed) === 0 && telemetry.ignition
+                              ? "Idle"
+                              : "Moving"
+                          }
+                          color={
+                            Number(telemetry.speed) === 0 && telemetry.ignition
+                              ? "warning"
+                              : "success"
+                          }
+                        />
+                      </Grid>
+
+                      <Grid
+                        item
+                        xs={12}
+                        sm={6}
+                        md={3}
+                        sx={{
+                          border: "1px solid",
+                          borderColor: "divider",
+                          borderRadius: 2,
+                          p: 2,
+                        }}
+                      >
+                        <Typography variant="body2" color="text.secondary">
+                          Odometer
+                        </Typography>
+
+                        <Typography variant="h6">
+                          {telemetry.odometer} km
+                        </Typography>
+                      </Grid>
+
+                      <Grid
+                        item
+                        xs={12}
+                        sm={6}
+                        md={3}
+                        sx={{
+                          border: "1px solid",
+                          borderColor: "divider",
+                          borderRadius: 2,
+                          p: 2,
+                        }}
+                      >
+                        <Typography variant="body2" color="text.secondary">
+                          Ignition
+                        </Typography>
+
+                        <Chip
+                          label={telemetry.ignition ? "ON" : "OFF"}
+                          color={telemetry.ignition ? "success" : "default"}
+                        />
+                      </Grid>
+
+                      <Grid
+                        item
+                        xs={12}
+                        sm={6}
+                        md={3}
+                        sx={{
+                          border: "1px solid",
+                          borderColor: "divider",
+                          borderRadius: 2,
+                          p: 2,
+                        }}
+                      >
+                        <Typography variant="body2" color="text.secondary">
+                          Live Location
+                        </Typography>
+
+                        <Typography variant="h6">
+                          {telemetry.latitude}, {telemetry.longitude}
+                        </Typography>
+                      </Grid>
+
+                      <Grid
+                        item
+                        xs={12}
+                        sm={6}
+                        md={3}
+                        sx={{
+                          border: "1px solid",
+                          borderColor: "divider",
+                          borderRadius: 2,
+                          p: 2,
+                        }}
+                      >
+                        <Typography variant="body2" color="text.secondary">
+                          Last Updated
+                        </Typography>
+
+                        <Typography variant="h6">
+                          {new Date(telemetry.recorded_at).toLocaleString(
+                            "en-IN",
+                            {
+                              day: "2-digit",
+                              month: "long",
+                              year: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            },
+                          )}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  ) : (
+                    <Typography color="text.secondary">
+                      No telemetry data available.
+                    </Typography>
+                  )}
                 </CardContent>
               </Card>
             </Grid>
-          )}
-
-          {/* live telemetry */}
-          <Grid item xs={12}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  Live Telemetry
-                </Typography>
-
-                <Chip
-                  label="Live Data"
-                  color="success"
-                  size="small"
-                  sx={{ mb: 3 }}
-                />
-
-                {telemetry ? (
-                  <Grid container spacing={3}>
-                    <Grid
-                      item
-                      xs={12}
-                      sm={6}
-                      md={3}
-                      sx={{
-                        border: "1px solid",
-                        borderColor: "divider",
-                        borderRadius: 2,
-                        p: 2,
-                      }}
-                    >
-                      <Typography variant="body2" color="text.secondary">
-                        Speed
-                      </Typography>
-
-                      <Typography variant="h6">
-                        {telemetry.speed} km/h
-                      </Typography>
-                    </Grid>
-
-                    <Grid
-                      item
-                      xs={12}
-                      sm={6}
-                      md={3}
-                      sx={{
-                        border: "1px solid",
-                        borderColor: "divider",
-                        borderRadius: 2,
-                        p: 2,
-                      }}
-                    >
-                      <Typography variant="body2" color="text.secondary">
-                        Fuel Level
-                      </Typography>
-
-                      <Typography variant="h6">
-                        {telemetry.fuel_level}%
-                      </Typography>
-                    </Grid>
-
-                    <Grid
-                      item
-                      xs={12}
-                      sm={6}
-                      md={3}
-                      sx={{
-                        border: "1px solid",
-                        borderColor: "divider",
-                        borderRadius: 2,
-                        p: 2,
-                      }}
-                    >
-                      <Typography variant="body2" color="text.secondary">
-                        Battery
-                      </Typography>
-
-                      <Typography variant="h6">
-                        {telemetry.battery_level} V
-                      </Typography>
-                    </Grid>
-
-                    <Grid
-                      item
-                      xs={12}
-                      sm={6}
-                      md={3}
-                      sx={{
-                        border: "1px solid",
-                        borderColor: "divider",
-                        borderRadius: 2,
-                        p: 2,
-                      }}
-                    >
-                      <Typography variant="body2" color="text.secondary">
-                        Engine Temperature
-                      </Typography>
-
-                      <Typography variant="h6">
-                        {telemetry.engine_temperature} °C
-                      </Typography>
-                    </Grid>
-
-                    <Grid
-                      item
-                      xs={12}
-                      sm={6}
-                      md={3}
-                      sx={{
-                        border: "1px solid",
-                        borderColor: "divider",
-                        borderRadius: 2,
-                        p: 2,
-                      }}
-                    >
-                      <Typography variant="body2" color="text.secondary">
-                        Ignition
-                      </Typography>
-
-                      <Chip
-                        label={
-                          Number(telemetry.speed) === 0 && telemetry.ignition
-                            ? "Idle"
-                            : "Moving"
-                        }
-                        color={
-                          Number(telemetry.speed) === 0 && telemetry.ignition
-                            ? "warning"
-                            : "success"
-                        }
-                      />
-                    </Grid>
-
-                    <Grid
-                      item
-                      xs={12}
-                      sm={6}
-                      md={3}
-                      sx={{
-                        border: "1px solid",
-                        borderColor: "divider",
-                        borderRadius: 2,
-                        p: 2,
-                      }}
-                    >
-                      <Typography variant="body2" color="text.secondary">
-                        Odometer
-                      </Typography>
-
-                      <Typography variant="h6">
-                        {telemetry.odometer} km
-                      </Typography>
-                    </Grid>
-
-                    <Grid
-                      item
-                      xs={12}
-                      sm={6}
-                      md={3}
-                      sx={{
-                        border: "1px solid",
-                        borderColor: "divider",
-                        borderRadius: 2,
-                        p: 2,
-                      }}
-                    >
-                      <Typography variant="body2" color="text.secondary">
-                        Ignition
-                      </Typography>
-
-                      <Chip
-                        label={telemetry.ignition ? "ON" : "OFF"}
-                        color={telemetry.ignition ? "success" : "default"}
-                      />
-                    </Grid>
-
-                    <Grid
-                      item
-                      xs={12}
-                      sm={6}
-                      md={3}
-                      sx={{
-                        border: "1px solid",
-                        borderColor: "divider",
-                        borderRadius: 2,
-                        p: 2,
-                      }}
-                    >
-                      <Typography variant="body2" color="text.secondary">
-                        Live Location
-                      </Typography>
-
-                      <Typography variant="h6">
-                        {telemetry.latitude}, {telemetry.longitude}
-                      </Typography>
-                    </Grid>
-
-                    <Grid
-                      item
-                      xs={12}
-                      sm={6}
-                      md={3}
-                      sx={{
-                        border: "1px solid",
-                        borderColor: "divider",
-                        borderRadius: 2,
-                        p: 2,
-                      }}
-                    >
-                      <Typography variant="body2" color="text.secondary">
-                        Last Updated
-                      </Typography>
-
-                      <Typography variant="h6">
-                        {new Date(telemetry.recorded_at).toLocaleString(
-                          "en-IN",
-                          {
-                            day: "2-digit",
-                            month: "long",
-                            year: "numeric",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          },
-                        )}
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                ) : (
-                  <Typography color="text.secondary">
-                    No telemetry data available.
-                  </Typography>
-                )}
-              </CardContent>
-            </Card>
           </Grid>
-        </Grid>
-      </Box>
+        </Box>
 
-      <Box sx={{ mt: 4 }}>
-        <Typography variant="h6" fontWeight={600} mb={2}>
-          Vehicle Location
-        </Typography>
-
-        {telemetry?.latitude && telemetry?.longitude ? (
-          <MapContainer
-            center={[Number(telemetry.latitude), Number(telemetry.longitude)]}
-            zoom={13}
-            style={{
-              height: "400px",
-              width: "100%",
-              borderRadius: "12px",
-            }}
+        {/* Live location on Map */}
+        <Box>
+          <Typography
+            variant="h6"
+            mb={2}
+            sx={{ color: "black", fontWeight: 900, fontSize: 30 }}
           >
-            <MapUpdater
-              latitude={telemetry.latitude}
-              longitude={telemetry.longitude}
-            />
-
-            <TileLayer
-              attribution="&copy; OpenStreetMap contributors"
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-
-            <Marker
-              position={[
-                Number(telemetry.latitude),
-                Number(telemetry.longitude),
-              ]}
-              icon={vehicleIcon}
-            >
-              <Popup>
-                <strong>{vehicle.vehicle_number}</strong>
-                <br />
-                {vehicle.manufacturer} {vehicle.model}
-                <br />
-                Speed: {telemetry.speed} km/h
-                <br />
-                Fuel: {telemetry.fuel_level}%
-                <br />
-                Status:{" "}
-                {Number(telemetry.speed) === 0 && telemetry.ignition
-                  ? "Idle"
-                  : "Moving"}
-              </Popup>
-            </Marker>
-          </MapContainer>
-        ) : (
-          <Typography color="text.secondary">
-            Location data is not available.
+            Vehicle Location
           </Typography>
-        )}
+
+          {telemetry?.latitude && telemetry?.longitude ? (
+            <MapContainer
+              center={[Number(telemetry.latitude), Number(telemetry.longitude)]}
+              zoom={13}
+              style={{
+                height: "300px",
+                width: "80%",
+                borderRadius: "5px",
+                alignItems: "center",
+              }}
+            >
+              <MapUpdater
+                latitude={telemetry.latitude}
+                longitude={telemetry.longitude}
+              />
+
+              <TileLayer
+                attribution="&copy; OpenStreetMap contributors"
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+
+              <Marker
+                position={[
+                  Number(telemetry.latitude),
+                  Number(telemetry.longitude),
+                ]}
+                icon={vehicleIcon}
+              >
+                <Popup>
+                  <strong>{vehicle.vehicle_number}</strong>
+                  <br />
+                  {vehicle.manufacturer} {vehicle.model}
+                  <br />
+                  Speed: {telemetry.speed} km/h
+                  <br />
+                  Fuel: {telemetry.fuel_level}%
+                  <br />
+                  Status:{" "}
+                  {Number(telemetry.speed) === 0 && telemetry.ignition
+                    ? "Idle"
+                    : "Moving"}
+                </Popup>
+              </Marker>
+            </MapContainer>
+          ) : (
+            <Typography color="text.secondary">
+              Location data is not available.
+            </Typography>
+          )}
+        </Box>
       </Box>
     </>
   );
 };
 
 export default VehicleDetails;
-
-// <Typography color="text.secondary">
-//   Live speed, fuel, battery, engine temperature, ignition,
-//   location and odometer data will be displayed here.
-// </Typography>
