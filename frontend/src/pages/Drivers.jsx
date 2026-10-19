@@ -28,6 +28,7 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import AddIcon from "@mui/icons-material/Add";
 
 import UpdateDriverDetails from "../components/drivers/UpdateDriverDetails";
+import DeleteDriverDetails from "../components/drivers/DeleteDriverDetails";
 
 const Drivers = () => {
   const navigate = useNavigate();
@@ -53,6 +54,11 @@ const Drivers = () => {
   const [openUpdateDriver, setOpenUpdateDriver] = useState(false);
   const [selectedDriver, setSelectedDriver] = useState(null);
   const [updatingSelectedDriver, setUpdatingSelectedDriver] = useState(false);
+
+  // delete driver states
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [selectedDriverToDelete, setSelectedDriverToDelete] = useState(null);
+  const [deletingDriver, setDeletingDriver] = useState(false);
 
   const driversPerPage = 10;
 
@@ -86,7 +92,21 @@ const Drivers = () => {
     setOpenUpdateDriver(true);
   };
 
+  // Delete driver functionality
+  const handleDriverDeleted = async () => {
+    await fetchDrivers();
+    setOpenDeleteDialog(false);
+    setSelectedDriverToDelete(null);
+  };
+
+  // Open delete driver dialog / form
+  const handleOpenDeleteDriver = (driver) => {
+    setSelectedDriverToDelete(driver);
+    setOpenDeleteDialog(true);
+  };
+
   // This function is called after a driver has been updated successfully
+
   const handleDriverUpdated = async () => {
     setUpdatingSelectedDriver(true);
 
@@ -439,6 +459,29 @@ const Drivers = () => {
                     >
                       Update
                     </Button>
+
+                    <Button
+                      variant="contained"
+                      color="error"
+                      size="small"
+                      sx={{
+                        textTransform: "none",
+                        minWidth: 76,
+                        px: 2,
+                        py: 0.75,
+                        borderRadius: 2,
+                        fontWeight: 600,
+                        boxShadow: "none",
+                        ml: 1,
+                        "&:hover": {
+                          backgroundColor: "error.dark",
+                          boxShadow: 1,
+                        },
+                      }}
+                      onClick={() => handleOpenDeleteDriver(driver)}
+                    >
+                      Delete
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))
@@ -563,6 +606,17 @@ const Drivers = () => {
           setSelectedDriver(null);
         }}
         onUpdated={handleDriverUpdated}
+      />
+
+      {/* Delete Driver Confirmation Dialog */}
+      <DeleteDriverDetails
+        open={openDeleteDialog}
+        driver={selectedDriverToDelete}
+        onClose={() => {
+          setOpenDeleteDialog(false);
+          setSelectedDriverToDelete(null);
+        }}
+        onDeleted={handleDriverDeleted}
       />
     </Box>
   );
