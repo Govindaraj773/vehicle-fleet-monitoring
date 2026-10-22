@@ -1,5 +1,10 @@
 const pool = require("../config/db");
 
+// Valid Indian Driving Licence Number Function
+const isValidIndianLicenseNumber = (licenseNumber) => {
+  return /^[A-Z]{2}\d{2}\d{4}\d{8}$/.test(licenseNumber);
+};
+
 const createDriver = async (req, res) => {
   try {
     const { name, phone, license_number, status } = req.body;
@@ -9,9 +14,16 @@ const createDriver = async (req, res) => {
       });
     }
 
+    if (!license_number || !isValidIndianLicenseNumber(license_number)) {
+      return res.status(400).json({
+        message:
+          "Invalid driving licence number. Enter 2 letters for the state code, 2 digits for the RTO code, 4 digits for the issue year, and 8 digits for the unique number. Do not use spaces or hyphens.",
+      });
+    }
+
     const result = await pool.query(
       `INSERT INTO drivers (name, phone, license_number, status)
-       VALUES ($1,$2,$3,$4) 
+       VALUES ($1,$2,$3,$4)
        RETURNING *`,
       [name, phone, license_number, status],
     );
@@ -84,6 +96,14 @@ const updateDriver = async (req, res) => {
         message: "Driver name must required!",
       });
     }
+
+    if (!isValidIndianLicenseNumber(license_number)) {
+      return res.status(400).json({
+        message:
+          "Invalid driving licence number. Enter 2 letters for the state code, 2 digits for the RTO code, 4 digits for the issue year, and 8 digits for the unique number. Do not use spaces or hyphens.",
+      });
+    }
+
     const result = await pool.query(
       `UPDATE drivers SET name= $1, phone= $2, license_number= $3, status= $4
       WHERE id = $5
@@ -101,6 +121,13 @@ const updateDriver = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
+
+    if (error.code === "23505") {
+      return res.status(409).json({
+        message: "Driver with this licence number already exists!",
+      });
+    }
+
     res.status(500).json({
       message: "Server error",
     });
