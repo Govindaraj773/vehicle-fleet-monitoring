@@ -5,6 +5,11 @@ const isValidIndianLicenseNumber = (licenseNumber) => {
   return /^[A-Z]{2}\d{2}\d{4}\d{8}$/.test(licenseNumber);
 };
 
+//  Valid Indian Mobile Number Function
+const isValidIndianMobileNumber = (phone) => {
+  return /^\+91[6-9]\d{9}$/.test(phone);
+};
+
 const createDriver = async (req, res) => {
   try {
     const { name, phone, license_number, status } = req.body;
@@ -18,6 +23,13 @@ const createDriver = async (req, res) => {
       return res.status(400).json({
         message:
           "Invalid driving licence number. Enter 2 letters for the state code, 2 digits for the RTO code, 4 digits for the issue year, and 8 digits for the unique number. Do not use spaces or hyphens.",
+      });
+    }
+
+    if (!phone || !isValidIndianMobileNumber(phone)) {
+      return res.status(400).json({
+        message:
+          "Invalid mobile number. Enter +91 followed by a valid 10-digit Indian mobile number.",
       });
     }
 
@@ -101,6 +113,13 @@ const updateDriver = async (req, res) => {
       return res.status(400).json({
         message:
           "Invalid driving licence number. Enter 2 letters for the state code, 2 digits for the RTO code, 4 digits for the issue year, and 8 digits for the unique number. Do not use spaces or hyphens.",
+      });
+    }
+
+    if (!phone || !isValidIndianMobileNumber(phone)) {
+      return res.status(400).json({
+        message:
+          "Invalid mobile number. Enter +91 followed by a valid 10-digit Indian mobile number.",
       });
     }
 
